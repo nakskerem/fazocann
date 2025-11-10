@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutlu Doğum Günü Fazocan!</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fefefe;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  h1 {
+    color: #333;
+    margin-top: 50px;
+    font-size: 3em;
+  }
+  #cake {
+    position: relative;
+    margin: 40px auto;
+    width: 400px;
+    height: 200px;
+    background: #fff;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  .candle {
+    position: absolute;
+    width: 10px;
+    height: 50px;
+    background: #ffcc00;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .flame {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    width: 10px;
+    height: 15px;
+    background: radial-gradient(circle, orange 0%, yellow 60%);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: flicker 0.3s infinite alternate;
+  }
+  @keyframes flicker {
+    0% { transform: translateX(-50%) scaleY(1); opacity:1; }
+    100% { transform: translateX(-50%) scaleY(0.8); opacity:0.8; }
+  }
+  #confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1000;
+  }
+  .balloon {
+    position: absolute;
+    width: 50px;
+    height: 70px;
+    background: red;
+    border-radius: 50% 50% 50% 50%;
+    bottom: 0;
+    cursor: default;
+    animation: floatUp 5s linear forwards;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-600px) rotate(360deg); }
+  }
+  #letterBtn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    background: #ff6b6b;
+    color: white;
+    cursor: pointer;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #333;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎉 Mutlu Doğum Günü Fazocan! 🎂</h1>
+
+<div id="cake"></div>
+
+<button id="letterBtn">Mektup Aç</button>
+<div id="message">
+  Doğum günün kutlu dostluğumuz baki olsun. Hep olman, hep iyi ki olman dileğiyle…
+</div>
+
+<audio id="birthdayMusic" autoplay loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div id="confetti"></div>
+
+<script>
+const cake = document.getElementById('cake');
+const confettiContainer = document.getElementById('confetti');
+let candlesLit = 19;
+const candlePositions = [];
+
+for(let i=0; i<19; i++){
+  const candle = document.createElement('div');
+  candle.classList.add('candle');
+  const flame = document.createElement('div');
+  flame.classList.add('flame');
+  candle.appendChild(flame);
+  
+  // Mumları eşit dağıt
+  const spacing = 380 / 18; 
+  candle.style.left = (10 + i*spacing) + 'px';
+  cake.appendChild(candle);
+  
+  candle.addEventListener('click', () => {
+    if(flame.style.display !== 'none'){
+      flame.style.display = 'none';
+      candlesLit--;
+      if(candlesLit === 0){
+        startConfetti();
+        launchBalloons();
+      }
+    }
+  });
+}
+
+function randomColor() {
+  const colors = ['#FF595E','#FFCA3A','#8AC926','#1982C4','#6A4C93'];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
+function startConfetti(){
+  for(let i=0;i<100;i++){
+    const confetti = document.createElement('div');
+    confetti.style.position = 'absolute';
+    confetti.style.width = '10px';
+    confetti.style.height = '10px';
+    confetti.style.background = randomColor();
+    confetti.style.left = Math.random()*window.innerWidth + 'px';
+    confetti.style.top = '0px';
+    confetti.style.opacity = 0.8;
+    confettiContainer.appendChild(confetti);
+    
+    let fall = 0;
+    const fallInterval = setInterval(()=>{
+      fall+=5;
+      confetti.style.top = fall+'px';
+      confetti.style.transform = `rotate(${fall*5}deg)`;
+      if(fall>window.innerHeight){
+        clearInterval(fallInterval);
+        confetti.remove();
+      }
+    },20);
+  }
+}
+
+function launchBalloons(){
+  for(let i=0;i<10;i++){
+    const balloon = document.createElement('div');
+    balloon.classList.add('balloon');
+    balloon.style.background = randomColor();
+    balloon.style.left = Math.random()*window.innerWidth + 'px';
+    balloon.style.animationDuration = (3 + Math.random()*3)+'s';
+    document.body.appendChild(balloon);
+    
+    setTimeout(()=>{ balloon.remove(); }, 6000);
+  }
+}
+
+document.getElementById('letterBtn').addEventListener('click', ()=>{
+  const msg = document.getElementById('message');
+  msg.style.display = msg.style.display === 'block' ? 'none' : 'block';
+});
+</script>
+
+</body>
+</html>
