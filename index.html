@@ -141,10 +141,6 @@ canvas {
 <div id="surprise">1 sürprizim daha var 🎁</div>
 <button id="musicBtn">Müziği Başlat</button>
 
-<audio id="birthdayMusic" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_8f38d4_happy-birthday-112158.mp3?filename=happy-birthday-112158.mp3" type="audio/mpeg">
-</audio>
-
 <canvas id="animationCanvas"></canvas>
 
 <script>
@@ -153,7 +149,6 @@ const letterBtn = document.getElementById('letterBtn');
 const message = document.getElementById('message');
 const surprise = document.getElementById('surprise');
 const musicBtn = document.getElementById('musicBtn');
-const music = document.getElementById('birthdayMusic');
 const canvas = document.getElementById('animationCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -170,7 +165,6 @@ for(let i=0;i<19;i++){
   flame.classList.add('flame');
   candle.appendChild(flame);
   cake.appendChild(candle);
-
   flames.push(flame);
 
   candle.addEventListener('click',()=>{
@@ -279,14 +273,48 @@ function drawBalloons(){
   }
 }
 
-// Müzik başlat/durdur
+// Müzik notaları için Web Audio API
+let audioCtx;
+let isPlaying = false;
+const notes = [
+  {freq:264, dur:250}, {freq:264, dur:250}, {freq:297, dur:500}, {freq:264, dur:500}, {freq:352, dur:500}, {freq:330, dur:1000},
+  {freq:264, dur:250}, {freq:264, dur:250}, {freq:297, dur:500}, {freq:264, dur:500}, {freq:396, dur:500}, {freq:352, dur:1000},
+  {freq:264, dur:250}, {freq:264, dur:250}, {freq:528, dur:500}, {freq:440, dur:500}, {freq:352, dur:500}, {freq:330, dur:500}, {freq:297, dur:1000}
+];
+
+let currentNote = 0;
+let interval;
+
+function playNotes() {
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  interval = setInterval(()=>{
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.type = 'square';
+    osc.frequency.value = notes[currentNote].freq;
+    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    osc.start();
+    osc.stop(audioCtx.currentTime + notes[currentNote].dur/1000);
+    currentNote++;
+    if(currentNote >= notes.length) currentNote = 0;
+  }, notes[currentNote].dur);
+}
+
+function stopNotes() {
+  clearInterval(interval);
+}
+
 musicBtn.addEventListener('click', ()=>{
-  if(music.paused){
-    music.play();
-    musicBtn.innerText='Müziği Durdur';
+  if(!isPlaying){
+    playNotes();
+    musicBtn.innerText = 'Müziği Durdur';
+    isPlaying = true;
   } else {
-    music.pause();
-    musicBtn.innerText='Müziği Başlat';
+    stopNotes();
+    musicBtn.innerText = 'Müziği Başlat';
+    isPlaying = false;
   }
 });
 
