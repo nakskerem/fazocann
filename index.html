@@ -6,133 +6,131 @@
 <title>İyi ki Doğdun Fazocan!</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin:0;
-    padding:0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #fdfdfd, #e6f0ff);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    min-height:100vh;
-    overflow:hidden;
-  }
-  h1 {
-    margin-top:50px;
-    color:#333;
-    font-size:3em;
-    text-shadow:0 3px 7px rgba(0,0,0,0.15);
-    text-align:center;
-  }
-  #cake {
-    position: relative;
-    margin:50px auto;
-    width:380px;
-    height:180px;
-    background: #fff;
-    border-radius:25px;
-    box-shadow:0 15px 30px rgba(0,0,0,0.2);
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    padding: 20px;
-  }
-  .candle {
-    position: relative;
-    width:12px;
-    height:60px;
-    background: linear-gradient(to top, #ffd54f, #ffca28);
-    border-radius:6px;
-    cursor:pointer;
-    display:flex;
-    justify-content:center;
-  }
-  .flame {
-    position:absolute;
-    top:-20px;
-    width:12px;
-    height:20px;
-    background: radial-gradient(circle, #ffeb3b 0%, #ff9800 60%, rgba(255,152,0,0) 100%);
-    border-radius:50%;
-    animation: flicker 0.2s infinite alternate;
-    transform-origin: bottom center;
-  }
-  .candle-label {
-    position:absolute;
-    bottom:70px;
-    width: max-content;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:1em;
-    color:#222;
-    text-align:center;
-    background: rgba(255,255,255,0.9);
-    padding: 4px 6px;
-    border-radius:4px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
-  }
-  @keyframes flicker {
-    0% { transform: scaleY(1) rotate(0deg); opacity:1;}
-    100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
-  }
-  #letterBtn {
-    margin-top:30px;
-    padding:12px 24px;
-    font-size:1.2em;
-    border:none;
-    border-radius:12px;
-    background: linear-gradient(135deg, #ff6b6b, #ff4757);
-    color:white;
-    cursor:pointer;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-    transition:0.3s;
-  }
-  #letterBtn:hover { transform: scale(1.05);}
-  #message {
-    display:none;
-    margin-top:20px;
-    background: rgba(255,255,255,0.95);
-    padding:20px 30px;
-    border-radius:15px;
-    font-size:1.3em;
-    color:#333;
-    box-shadow:0 8px 25px rgba(0,0,0,0.2);
-    max-width:80%;
-    text-align:center;
-  }
-  #surprise {
-    display:none;
-    margin-top:20px;
-    font-size:1.5em;
-    color:#ff6b6b;
-    font-weight:bold;
-    text-align:center;
-  }
-  #musicBtn {
-    margin-top:20px;
-    padding:10px 20px;
-    font-size:1em;
-    border:none;
-    border-radius:10px;
-    background: #4b7bec;
-    color:white;
-    cursor:pointer;
-    box-shadow:0 3px 8px rgba(0,0,0,0.15);
-  }
-  canvas {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    z-index:999;
-  }
+body {
+  margin:0;
+  padding:0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #fdfdfd, #e6f0ff);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+h1 {
+  margin-top:50px;
+  color:#333;
+  font-size:3em;
+  text-shadow:0 3px 7px rgba(0,0,0,0.15);
+  text-align:center;
+}
+#instruction {
+  margin-top:10px;
+  font-size:1.2em;
+  color:#222;
+  background: rgba(255,255,255,0.9);
+  padding:8px 12px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  text-align:center;
+}
+#cake {
+  position: relative;
+  margin:30px auto;
+  width:380px;
+  height:180px;
+  background: #fff;
+  border-radius:25px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding: 20px;
+}
+.candle {
+  position: relative;
+  width:12px;
+  height:60px;
+  background: linear-gradient(to top, #ffd54f, #ffca28);
+  border-radius:6px;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+}
+.flame {
+  position:absolute;
+  top:-20px;
+  width:12px;
+  height:20px;
+  background: radial-gradient(circle, #ffeb3b 0%, #ff9800 60%, rgba(255,152,0,0) 100%);
+  border-radius:50%;
+  animation: flicker 0.2s infinite alternate;
+  transform-origin: bottom center;
+}
+@keyframes flicker {
+  0% { transform: scaleY(1) rotate(0deg); opacity:1;}
+  100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
+}
+#letterBtn {
+  margin-top:30px;
+  padding:12px 24px;
+  font-size:1.2em;
+  border:none;
+  border-radius:12px;
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color:white;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  transition:0.3s;
+}
+#letterBtn:hover { transform: scale(1.05);}
+#message {
+  display:none;
+  margin-top:20px;
+  background: rgba(255,255,255,0.95);
+  padding:20px 30px;
+  border-radius:15px;
+  font-size:1.3em;
+  color:#333;
+  box-shadow:0 8px 25px rgba(0,0,0,0.2);
+  max-width:80%;
+  text-align:center;
+}
+#surprise {
+  display:none;
+  margin-top:20px;
+  font-size:1.5em;
+  color:#ff6b6b;
+  font-weight:bold;
+  text-align:center;
+}
+#musicBtn {
+  margin-top:20px;
+  padding:10px 20px;
+  font-size:1em;
+  border:none;
+  border-radius:10px;
+  background: #4b7bec;
+  color:white;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+}
+canvas {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:999;
+}
 </style>
 </head>
 <body>
 
 <h1>🎉 İyi ki Doğdun Fazocan! 🎂</h1>
+<div id="instruction">Dileğini dile ve tıklayarak söndür</div>
+
 <div id="cake"></div>
 
 <button id="letterBtn">Mektup Aç</button>
@@ -144,7 +142,7 @@
 <button id="musicBtn">Müziği Durdur</button>
 
 <audio id="birthdayMusic" autoplay loop>
-  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_xxxxxx_happybirthday.mp3?attachment" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_8f38d4_happy-birthday-112158.mp3?filename=happy-birthday-112158.mp3" type="audio/mpeg">
 </audio>
 
 <canvas id="animationCanvas"></canvas>
@@ -171,19 +169,13 @@ for(let i=0;i<19;i++){
   const flame = document.createElement('div');
   flame.classList.add('flame');
   candle.appendChild(flame);
-
-  const label = document.createElement('div');
-  label.classList.add('candle-label');
-  label.innerText = 'Dileğini dile ve tıklayarak söndür';
-  candle.appendChild(label);
-
   cake.appendChild(candle);
+
   flames.push(flame);
 
   candle.addEventListener('click',()=>{
     if(flame.style.display !== 'none'){
       flame.style.display='none';
-      label.style.display='none';
       candlesLit--;
       if(candlesLit===0){
         startConfetti();
