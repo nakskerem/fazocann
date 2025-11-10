@@ -10,49 +10,47 @@
     margin:0;
     padding:0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #fefefe, #e6f7ff);
+    background: linear-gradient(135deg, #fdfdfd, #e6f0ff);
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-start;
     min-height:100vh;
-    overflow-x:hidden;
+    overflow:hidden;
   }
   h1 {
     margin-top:50px;
     color:#333;
     font-size:2.8em;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-shadow:0 2px 5px rgba(0,0,0,0.1);
   }
   #cake {
     position: relative;
-    margin: 50px auto 0;
-    width: 380px;
-    height: 180px;
+    margin:50px auto;
+    width:380px;
+    height:180px;
     background: #fff;
-    border-radius: 25px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    border-radius:25px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.2);
     display:flex;
     justify-content:space-between;
+    align-items:flex-start;
     padding: 20px;
   }
   .candle {
     position: relative;
-    width: 12px;
-    height: 60px;
+    width:12px;
+    height:60px;
     background: linear-gradient(to top, #ffd54f, #ffca28);
-    border-radius: 6px;
-    cursor: pointer;
-    display:flex;
-    justify-content:center;
+    border-radius:6px;
+    cursor:pointer;
   }
   .flame {
-    position: absolute;
-    top: -20px;
-    width: 12px;
-    height: 20px;
+    position:absolute;
+    top:-20px;
+    width:12px;
+    height:20px;
     background: radial-gradient(circle, #ffeb3b 0%, #ff9800 60%, rgba(255,152,0,0) 100%);
-    border-radius: 50%;
+    border-radius:50%;
     animation: flicker 0.2s infinite alternate;
     transform-origin: bottom center;
   }
@@ -61,7 +59,7 @@
     100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
   }
   #letterBtn {
-    margin-top:40px;
+    margin-top:30px;
     padding:12px 24px;
     font-size:1.2em;
     border:none;
@@ -85,7 +83,7 @@
     max-width:80%;
     text-align:center;
   }
-  #confettiCanvas {
+  canvas {
     position: fixed;
     top:0;
     left:0;
@@ -99,7 +97,6 @@
 <body>
 
 <h1>🎉 Mutlu Doğum Günü Fazocan! 🎂</h1>
-
 <div id="cake"></div>
 
 <button id="letterBtn">Mektup Aç</button>
@@ -111,57 +108,53 @@
   <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
-<canvas id="confettiCanvas"></canvas>
+<canvas id="animationCanvas"></canvas>
 
 <script>
 const cake = document.getElementById('cake');
 const letterBtn = document.getElementById('letterBtn');
 const message = document.getElementById('message');
-const canvas = document.getElementById('confettiCanvas');
+const canvas = document.getElementById('animationCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let candlesLit = 19;
-const candles = [];
+const flames = [];
 
-function createCandles() {
-  for(let i=0;i<19;i++){
-    const candle = document.createElement('div');
-    candle.classList.add('candle');
-    const flame = document.createElement('div');
-    flame.classList.add('flame');
-    candle.appendChild(flame);
-    
-    cake.appendChild(candle);
-    candles.push(flame);
-    
-    candle.addEventListener('click', ()=>{
-      if(flame.style.display !== 'none'){
-        flame.style.display='none';
-        candlesLit--;
-        if(candlesLit===0){
-          startConfetti();
-          launchBalloons();
-        }
+// Mum oluşturma
+for(let i=0;i<19;i++){
+  const candle = document.createElement('div');
+  candle.classList.add('candle');
+  const flame = document.createElement('div');
+  flame.classList.add('flame');
+  candle.appendChild(flame);
+  cake.appendChild(candle);
+  flames.push(flame);
+  candle.addEventListener('click',()=>{
+    if(flame.style.display !== 'none'){
+      flame.style.display='none';
+      candlesLit--;
+      if(candlesLit===0){
+        startConfetti();
+        launchBalloons();
       }
-    });
-  }
+    }
+  });
 }
-createCandles();
 
-// Modern Confetti
-let confettiParticles = [];
-function startConfetti() {
-  for(let i=0;i<150;i++){
+// Particle sistemleri
+const confettiParticles=[];
+function startConfetti(){
+  for(let i=0;i<200;i++){
     confettiParticles.push({
       x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height - canvas.height,
-      size:Math.random()*7 +3,
-      speed:Math.random()*4 +2,
-      angle: Math.random()*360,
-      color: `hsl(${Math.random()*360}, 100%, 50%)`,
-      tilt: Math.random()*10-5
+      y:Math.random()*canvas.height-200,
+      size:Math.random()*8+3,
+      speed:Math.random()*4+2,
+      angle:Math.random()*360,
+      color:`hsl(${Math.random()*360},100%,50%)`,
+      tilt:Math.random()*10-5
     });
   }
   requestAnimationFrame(drawConfetti);
@@ -169,12 +162,12 @@ function startConfetti() {
 
 function drawConfetti(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  confettiParticles.forEach((p)=>{
+  confettiParticles.forEach(p=>{
     ctx.save();
     ctx.fillStyle=p.color;
     ctx.translate(p.x,p.y);
     ctx.rotate(p.angle*Math.PI/180);
-    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
     ctx.restore();
     p.y += p.speed;
     p.angle += 2;
@@ -183,41 +176,70 @@ function drawConfetti(){
   requestAnimationFrame(drawConfetti);
 }
 
-// Balon Animasyonu
+// Balonlar
+const balloons=[];
 function launchBalloons(){
   for(let i=0;i<15;i++){
-    const balloon = document.createElement('div');
-    balloon.style.width='50px';
-    balloon.style.height='70px';
-    balloon.style.position='absolute';
-    balloon.style.bottom='-100px';
-    balloon.style.left=Math.random()*window.innerWidth+'px';
-    balloon.style.background = `radial-gradient(circle at 30% 30%, ${randomColor()}, ${randomColor()})`;
-    balloon.style.borderRadius='50% 50% 50% 50%';
-    balloon.style.zIndex=500;
-    balloon.style.opacity=0.9;
-    document.body.appendChild(balloon);
-    
-    let posY = -100;
-    const floatInterval = setInterval(()=>{
-      posY+=2 + Math.random()*2;
-      balloon.style.bottom = posY+'px';
-      if(posY>window.innerHeight+100){
-        balloon.remove();
-        clearInterval(floatInterval);
-      }
-    },20);
+    balloons.push({
+      x:Math.random()*canvas.width,
+      y:canvas.height+Math.random()*200,
+      radiusX:20+Math.random()*15,
+      radiusY:30+Math.random()*20,
+      speed:1+Math.random()*2,
+      color: randomColor()
+    });
   }
+  requestAnimationFrame(drawBalloons);
 }
 
-function randomColor() {
+function drawBalloons(){
+  balloons.forEach(b=>{
+    ctx.beginPath();
+    ctx.ellipse(b.x,b.y,b.radiusX,b.radiusY,0,0,2*Math.PI);
+    const grd = ctx.createRadialGradient(b.x,b.y-5,5,b.x,b.y,Math.max(b.radiusX,b.radiusY));
+    grd.addColorStop(0,'#fff');
+    grd.addColorStop(1,b.color);
+    ctx.fillStyle=grd;
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.1)';
+    ctx.stroke();
+    b.y -= b.speed;
+    b.x += Math.sin(b.y/50)*2;
+  });
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach(p=>{
+    ctx.save();
+    ctx.fillStyle=p.color;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.angle*Math.PI/180);
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+    ctx.restore();
+    p.y += p.speed;
+    p.angle += 2;
+    if(p.y>canvas.height) p.y=0;
+  });
+  balloons.forEach(b=>{
+    ctx.beginPath();
+    ctx.ellipse(b.x,b.y,b.radiusX,b.radiusY,0,0,2*Math.PI);
+    const grd = ctx.createRadialGradient(b.x,b.y-5,5,b.x,b.y,Math.max(b.radiusX,b.radiusY));
+    grd.addColorStop(0,'#fff');
+    grd.addColorStop(1,b.color);
+    ctx.fillStyle=grd;
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.1)';
+    ctx.stroke();
+  });
+  if(balloons.length>0) requestAnimationFrame(drawBalloons);
+}
+
+function randomColor(){
   const colors=['#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#6a0dad','#ff69b4'];
   return colors[Math.floor(Math.random()*colors.length)];
 }
 
 // Mektup
 letterBtn.addEventListener('click', ()=>{
-  message.style.display = message.style.display==='block' ? 'none' : 'block';
+  message.style.display = message.style.display==='block'?'none':'block';
 });
 </script>
 
