@@ -280,15 +280,26 @@ function drawBalloons(){
 }
 
 // Müzik başlat/durdur
-musicBtn.addEventListener('click', ()=>{
-  if(music.paused){
+<audio id="birthdayMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_8f38d4_happy-birthday-112158.mp3?filename=happy-birthday-112158.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicBtn">Müziği Başlat</button>
+
+<script>
+const music = document.getElementById('birthdayMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+musicBtn.addEventListener('click', () => {
+  if (music.paused) {
     music.play();
-    musicBtn.innerText='Müziği Durdur';
+    musicBtn.innerText = 'Müziği Durdur';
   } else {
     music.pause();
-    musicBtn.innerText='Müziği Başlat';
+    musicBtn.innerText = 'Müziği Başlat';
   }
 });
+</script>
 
 // Mektup açma
 letterBtn.addEventListener('click', ()=>{
