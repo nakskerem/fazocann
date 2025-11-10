@@ -273,48 +273,53 @@ function drawBalloons(){
   }
 }
 
-// Müzik notaları için Web Audio API
+// Web Audio API ile Happy Birthday
 let audioCtx;
 let isPlaying = false;
 const notes = [
-  {freq:264, dur:250}, {freq:264, dur:250}, {freq:297, dur:500}, {freq:264, dur:500}, {freq:352, dur:500}, {freq:330, dur:1000},
-  {freq:264, dur:250}, {freq:264, dur:250}, {freq:297, dur:500}, {freq:264, dur:500}, {freq:396, dur:500}, {freq:352, dur:1000},
-  {freq:264, dur:250}, {freq:264, dur:250}, {freq:528, dur:500}, {freq:440, dur:500}, {freq:352, dur:500}, {freq:330, dur:500}, {freq:297, dur:1000}
+  {freq:264, dur:400},{freq:264, dur:400},{freq:297, dur:800},{freq:264, dur:800},{freq:352, dur:800},{freq:330, dur:1600},
+  {freq:264, dur:400},{freq:264, dur:400},{freq:297, dur:800},{freq:264, dur:800},{freq:396, dur:800},{freq:352, dur:1600},
+  {freq:264, dur:400},{freq:264, dur:400},{freq:528, dur:800},{freq:440, dur:800},{freq:352, dur:800},{freq:330, dur:800},{freq:297, dur:1600}
 ];
 
 let currentNote = 0;
-let interval;
+let timeoutId;
 
-function playNotes() {
+function playNextNote(){
   if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  interval = setInterval(()=>{
-    const osc = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    osc.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    osc.type = 'square';
-    osc.frequency.value = notes[currentNote].freq;
-    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    osc.start();
-    osc.stop(audioCtx.currentTime + notes[currentNote].dur/1000);
-    currentNote++;
-    if(currentNote >= notes.length) currentNote = 0;
-  }, notes[currentNote].dur);
+  const note = notes[currentNote];
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type = 'sine'; // Daha yumuşak ton
+  osc.frequency.value = note.freq;
+  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  osc.start();
+  osc.stop(audioCtx.currentTime + note.dur/1000);
+  currentNote = (currentNote + 1) % notes.length;
+  timeoutId = setTimeout(playNextNote, note.dur);
 }
 
-function stopNotes() {
-  clearInterval(interval);
+function startMusic(){
+  if(!isPlaying){
+    isPlaying = true;
+    playNextNote();
+  }
+}
+
+function stopMusic(){
+  isPlaying = false;
+  clearTimeout(timeoutId);
 }
 
 musicBtn.addEventListener('click', ()=>{
   if(!isPlaying){
-    playNotes();
+    startMusic();
     musicBtn.innerText = 'Müziği Durdur';
-    isPlaying = true;
   } else {
-    stopNotes();
+    stopMusic();
     musicBtn.innerText = 'Müziği Başlat';
-    isPlaying = false;
   }
 });
 
