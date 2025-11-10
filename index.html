@@ -4,92 +4,95 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mutlu Doğum Günü Fazocan!</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body {
-    margin: 0;
-    padding: 0;
-    background: #fefefe;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    overflow-x: hidden;
+    margin:0;
+    padding:0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #fefefe, #e6f7ff);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:100vh;
+    overflow-x:hidden;
   }
   h1 {
-    color: #333;
-    margin-top: 50px;
-    font-size: 3em;
+    margin-top:50px;
+    color:#333;
+    font-size:2.8em;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
   #cake {
     position: relative;
-    margin: 40px auto;
-    width: 400px;
-    height: 200px;
+    margin: 50px auto 0;
+    width: 380px;
+    height: 180px;
     background: #fff;
-    border-radius: 20px;
-    border: 2px solid #ccc;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-radius: 25px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    display:flex;
+    justify-content:space-between;
+    padding: 20px;
   }
   .candle {
-    position: absolute;
-    width: 10px;
-    height: 50px;
-    background: #ffcc00;
-    border-radius: 5px;
+    position: relative;
+    width: 12px;
+    height: 60px;
+    background: linear-gradient(to top, #ffd54f, #ffca28);
+    border-radius: 6px;
     cursor: pointer;
+    display:flex;
+    justify-content:center;
   }
   .flame {
     position: absolute;
-    top: -15px;
-    left: 50%;
-    width: 10px;
-    height: 15px;
-    background: radial-gradient(circle, orange 0%, yellow 60%);
+    top: -20px;
+    width: 12px;
+    height: 20px;
+    background: radial-gradient(circle, #ffeb3b 0%, #ff9800 60%, rgba(255,152,0,0) 100%);
     border-radius: 50%;
-    transform: translateX(-50%);
-    animation: flicker 0.3s infinite alternate;
+    animation: flicker 0.2s infinite alternate;
+    transform-origin: bottom center;
   }
   @keyframes flicker {
-    0% { transform: translateX(-50%) scaleY(1); opacity:1; }
-    100% { transform: translateX(-50%) scaleY(0.8); opacity:0.8; }
-  }
-  #confetti {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    pointer-events: none;
-    overflow: visible;
-    z-index: 1000;
-  }
-  .balloon {
-    position: absolute;
-    width: 50px;
-    height: 70px;
-    background: red;
-    border-radius: 50% 50% 50% 50%;
-    bottom: 0;
-    cursor: default;
-    animation: floatUp 5s linear forwards;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); }
-    100% { transform: translateY(-600px) rotate(360deg); }
+    0% { transform: scaleY(1) rotate(0deg); opacity:1;}
+    100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
   }
   #letterBtn {
-    margin-top: 30px;
-    padding: 10px 20px;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 8px;
-    background: #ff6b6b;
-    color: white;
-    cursor: pointer;
+    margin-top:40px;
+    padding:12px 24px;
+    font-size:1.2em;
+    border:none;
+    border-radius:12px;
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    color:white;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    transition:0.3s;
   }
+  #letterBtn:hover { transform: scale(1.05);}
   #message {
-    margin-top: 20px;
-    font-size: 1.5em;
-    color: #333;
-    display: none;
+    display:none;
+    margin-top:20px;
+    background: rgba(255,255,255,0.9);
+    padding:20px 30px;
+    border-radius:15px;
+    font-size:1.3em;
+    color:#333;
+    box-shadow:0 8px 25px rgba(0,0,0,0.2);
+    max-width:80%;
+    text-align:center;
+  }
+  #confettiCanvas {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:999;
   }
 </style>
 </head>
@@ -108,84 +111,113 @@
   <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
-<div id="confetti"></div>
+<canvas id="confettiCanvas"></canvas>
 
 <script>
 const cake = document.getElementById('cake');
-const confettiContainer = document.getElementById('confetti');
+const letterBtn = document.getElementById('letterBtn');
+const message = document.getElementById('message');
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 let candlesLit = 19;
-const candlePositions = [];
+const candles = [];
 
-for(let i=0; i<19; i++){
-  const candle = document.createElement('div');
-  candle.classList.add('candle');
-  const flame = document.createElement('div');
-  flame.classList.add('flame');
-  candle.appendChild(flame);
-  
-  // Mumları eşit dağıt
-  const spacing = 380 / 18; 
-  candle.style.left = (10 + i*spacing) + 'px';
-  cake.appendChild(candle);
-  
-  candle.addEventListener('click', () => {
-    if(flame.style.display !== 'none'){
-      flame.style.display = 'none';
-      candlesLit--;
-      if(candlesLit === 0){
-        startConfetti();
-        launchBalloons();
-      }
-    }
-  });
-}
-
-function randomColor() {
-  const colors = ['#FF595E','#FFCA3A','#8AC926','#1982C4','#6A4C93'];
-  return colors[Math.floor(Math.random()*colors.length)];
-}
-
-function startConfetti(){
-  for(let i=0;i<100;i++){
-    const confetti = document.createElement('div');
-    confetti.style.position = 'absolute';
-    confetti.style.width = '10px';
-    confetti.style.height = '10px';
-    confetti.style.background = randomColor();
-    confetti.style.left = Math.random()*window.innerWidth + 'px';
-    confetti.style.top = '0px';
-    confetti.style.opacity = 0.8;
-    confettiContainer.appendChild(confetti);
+function createCandles() {
+  for(let i=0;i<19;i++){
+    const candle = document.createElement('div');
+    candle.classList.add('candle');
+    const flame = document.createElement('div');
+    flame.classList.add('flame');
+    candle.appendChild(flame);
     
-    let fall = 0;
-    const fallInterval = setInterval(()=>{
-      fall+=5;
-      confetti.style.top = fall+'px';
-      confetti.style.transform = `rotate(${fall*5}deg)`;
-      if(fall>window.innerHeight){
-        clearInterval(fallInterval);
-        confetti.remove();
+    cake.appendChild(candle);
+    candles.push(flame);
+    
+    candle.addEventListener('click', ()=>{
+      if(flame.style.display !== 'none'){
+        flame.style.display='none';
+        candlesLit--;
+        if(candlesLit===0){
+          startConfetti();
+          launchBalloons();
+        }
+      }
+    });
+  }
+}
+createCandles();
+
+// Modern Confetti
+let confettiParticles = [];
+function startConfetti() {
+  for(let i=0;i<150;i++){
+    confettiParticles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height - canvas.height,
+      size:Math.random()*7 +3,
+      speed:Math.random()*4 +2,
+      angle: Math.random()*360,
+      color: `hsl(${Math.random()*360}, 100%, 50%)`,
+      tilt: Math.random()*10-5
+    });
+  }
+  requestAnimationFrame(drawConfetti);
+}
+
+function drawConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach((p)=>{
+    ctx.save();
+    ctx.fillStyle=p.color;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.angle*Math.PI/180);
+    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    ctx.restore();
+    p.y += p.speed;
+    p.angle += 2;
+    if(p.y>canvas.height) p.y=0;
+  });
+  requestAnimationFrame(drawConfetti);
+}
+
+// Balon Animasyonu
+function launchBalloons(){
+  for(let i=0;i<15;i++){
+    const balloon = document.createElement('div');
+    balloon.style.width='50px';
+    balloon.style.height='70px';
+    balloon.style.position='absolute';
+    balloon.style.bottom='-100px';
+    balloon.style.left=Math.random()*window.innerWidth+'px';
+    balloon.style.background = `radial-gradient(circle at 30% 30%, ${randomColor()}, ${randomColor()})`;
+    balloon.style.borderRadius='50% 50% 50% 50%';
+    balloon.style.zIndex=500;
+    balloon.style.opacity=0.9;
+    document.body.appendChild(balloon);
+    
+    let posY = -100;
+    const floatInterval = setInterval(()=>{
+      posY+=2 + Math.random()*2;
+      balloon.style.bottom = posY+'px';
+      if(posY>window.innerHeight+100){
+        balloon.remove();
+        clearInterval(floatInterval);
       }
     },20);
   }
 }
 
-function launchBalloons(){
-  for(let i=0;i<10;i++){
-    const balloon = document.createElement('div');
-    balloon.classList.add('balloon');
-    balloon.style.background = randomColor();
-    balloon.style.left = Math.random()*window.innerWidth + 'px';
-    balloon.style.animationDuration = (3 + Math.random()*3)+'s';
-    document.body.appendChild(balloon);
-    
-    setTimeout(()=>{ balloon.remove(); }, 6000);
-  }
+function randomColor() {
+  const colors=['#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#6a0dad','#ff69b4'];
+  return colors[Math.floor(Math.random()*colors.length)];
 }
 
-document.getElementById('letterBtn').addEventListener('click', ()=>{
-  const msg = document.getElementById('message');
-  msg.style.display = msg.style.display === 'block' ? 'none' : 'block';
+// Mektup
+letterBtn.addEventListener('click', ()=>{
+  message.style.display = message.style.display==='block' ? 'none' : 'block';
 });
 </script>
 
