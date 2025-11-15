@@ -8,7 +8,7 @@
 <style>
 body {
   margin:0;
-  padding:0 10px; /* Yanlardan hafif boşluk */
+  padding:0 10px;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #fdfdfd, #e6f0ff);
   display:flex;
@@ -20,14 +20,14 @@ body {
 h1 {
   margin-top:40px;
   color:#333;
-  font-size:2em; /* Başlığı küçülttük */
+  font-size:2em;
   text-shadow:0 2px 5px rgba(0,0,0,0.15);
   text-align:center;
   word-break: break-word;
 }
 #instruction {
   margin-top:10px;
-  font-size:1em; /* Mobilde okunaklı boyut */
+  font-size:1em;
   color:#222;
   background: rgba(255,255,255,0.9);
   padding:6px 10px;
@@ -39,7 +39,7 @@ h1 {
 #cake {
   position: relative;
   margin:20px auto;
-  width:90%; /* Mobilde ekran genişliğine uyumlu */
+  width:90%;
   max-width:380px;
   height:180px;
   background: #fff;
@@ -270,42 +270,51 @@ function drawBalloons(){
   if(!balloons.every(b => b.y + b.radiusY < -20)) requestAnimationFrame(drawBalloons);
 }
 
-// Happy Birthday müzik (yumuşak ve daha yavaş)
-let audioCtx;
+// --- Güncellenmiş Çalışan Müzik Kısmı ---
+let audioCtx = null;
 let isPlaying = false;
+let currentNote = 0;
+let noteTimeout;
+
 const notes = [
   {freq:264, dur:500},{freq:264, dur:500},{freq:297, dur:1000},{freq:264, dur:1000},{freq:352, dur:1000},{freq:330, dur:2000},
   {freq:264, dur:500},{freq:264, dur:500},{freq:297, dur:1000},{freq:264, dur:1000},{freq:396, dur:1000},{freq:352, dur:2000},
   {freq:264, dur:500},{freq:264, dur:500},{freq:528, dur:1000},{freq:440, dur:1000},{freq:352, dur:1000},{freq:330, dur:1000},{freq:297, dur:2000}
 ];
 
-let currentNote = 0;
-let timeoutId;
-
 function playNextNote(){
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(!isPlaying) return;
   const note = notes[currentNote];
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
+  
   osc.type = 'sine';
   osc.frequency.value = note.freq;
+  
   gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  
   osc.start();
   osc.stop(audioCtx.currentTime + note.dur/1000);
-  currentNote = (currentNote + 1) % notes.length;
-  timeoutId = setTimeout(playNextNote, note.dur);
+  
+  currentNote++;
+  if(currentNote >= notes.length) currentNote = 0;
+  
+  noteTimeout = setTimeout(playNextNote, note.dur);
 }
 
 musicBtn.addEventListener('click', ()=>{
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
   if(!isPlaying){
     isPlaying = true;
     playNextNote();
     musicBtn.innerText = 'Müziği Durdur';
   } else {
     isPlaying = false;
-    clearTimeout(timeoutId);
+    clearTimeout(noteTimeout);
     musicBtn.innerText = 'Müziği Başlat';
   }
 });
