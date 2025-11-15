@@ -270,11 +270,11 @@ function drawBalloons(){
   if(!balloons.every(b => b.y + b.radiusY < -20)) requestAnimationFrame(drawBalloons);
 }
 
-// --- Güncellenmiş Çalışan Müzik Kısmı ---
+// --- Güvenilir Çalışan Happy Birthday Müziği ---
 let audioCtx = null;
 let isPlaying = false;
-let currentNote = 0;
-let noteTimeout;
+let noteIndex = 0;
+let intervalId;
 
 const notes = [
   {freq:264, dur:500},{freq:264, dur:500},{freq:297, dur:1000},{freq:264, dur:1000},{freq:352, dur:1000},{freq:330, dur:2000},
@@ -282,39 +282,34 @@ const notes = [
   {freq:264, dur:500},{freq:264, dur:500},{freq:528, dur:1000},{freq:440, dur:1000},{freq:352, dur:1000},{freq:330, dur:1000},{freq:297, dur:2000}
 ];
 
-function playNextNote(){
-  if(!isPlaying) return;
-  const note = notes[currentNote];
+function playNote(note){
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  
-  osc.type = 'sine';
   osc.frequency.value = note.freq;
-  
+  osc.type = 'sine';
   gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-  
   osc.connect(gain);
   gain.connect(audioCtx.destination);
-  
   osc.start();
   osc.stop(audioCtx.currentTime + note.dur/1000);
-  
-  currentNote++;
-  if(currentNote >= notes.length) currentNote = 0;
-  
-  noteTimeout = setTimeout(playNextNote, note.dur);
 }
 
 musicBtn.addEventListener('click', ()=>{
   if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
+
   if(!isPlaying){
     isPlaying = true;
-    playNextNote();
+    noteIndex = 0;
+    playNote(notes[noteIndex]);
+    intervalId = setInterval(()=>{
+      noteIndex++;
+      if(noteIndex >= notes.length) noteIndex = 0;
+      playNote(notes[noteIndex]);
+    }, notes[noteIndex].dur);
     musicBtn.innerText = 'Müziği Durdur';
   } else {
     isPlaying = false;
-    clearTimeout(noteTimeout);
+    clearInterval(intervalId);
     musicBtn.innerText = 'Müziği Başlat';
   }
 });
