@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>İyi ki Doğdun Fazocan!</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin:0;
@@ -23,7 +24,6 @@ h1 {
   font-size:2em;
   text-shadow:0 2px 5px rgba(0,0,0,0.15);
   text-align:center;
-  word-break: break-word;
 }
 #instruction {
   margin-top:10px;
@@ -33,8 +33,6 @@ h1 {
   padding:6px 10px;
   border-radius:8px;
   box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  text-align:center;
-  max-width:90%;
 }
 #cake {
   position: relative;
@@ -51,14 +49,12 @@ h1 {
   padding: 15px;
 }
 .candle {
-  position: relative;
   width:12px;
   height:60px;
   background: linear-gradient(to top, #ffd54f, #ffca28);
   border-radius:6px;
   cursor:pointer;
-  display:flex;
-  justify-content:center;
+  position:relative;
 }
 .flame {
   position:absolute;
@@ -71,54 +67,42 @@ h1 {
   transform-origin: bottom center;
 }
 @keyframes flicker {
-  0% { transform: scaleY(1) rotate(0deg); opacity:1;}
-  100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
+  0% { transform: scaleY(1); opacity:1;}
+  100% { transform: scaleY(0.85); opacity:0.8;}
 }
-#letterBtn {
+
+#letterBtn, #choiceBtn {
   margin-top:20px;
   padding:10px 20px;
   font-size:1em;
   border:none;
   border-radius:12px;
-  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  background:#4b7bec;
   color:white;
   cursor:pointer;
   box-shadow:0 4px 12px rgba(0,0,0,0.2);
-  transition:0.3s;
 }
-#letterBtn:hover { transform: scale(1.05);}
+#letterBtn:hover, #choiceBtn:hover { transform:scale(1.05); }
+
 #message {
   display:none;
   margin-top:15px;
-  background: rgba(255,255,255,0.95);
+  background:white;
   padding:15px 20px;
   border-radius:15px;
   font-size:1.1em;
   color:#333;
   box-shadow:0 6px 20px rgba(0,0,0,0.2);
-  max-width:95%;
-  text-align:center;
-  word-break: break-word;
 }
+
 #surprise {
   display:none;
   margin-top:15px;
   font-size:1.2em;
   color:#ff6b6b;
   font-weight:bold;
-  text-align:center;
 }
-#choiceBtn {
-  margin-top:15px;
-  padding:10px 20px;
-  font-size:1em;
-  border:none;
-  border-radius:12px;
-  background: #4b7bec;
-  color:white;
-  cursor:pointer;
-  box-shadow:0 3px 8px rgba(0,0,0,0.15);
-}
+
 canvas {
   position: fixed;
   top:0;
@@ -128,8 +112,29 @@ canvas {
   pointer-events:none;
   z-index:999;
 }
+
+.choiceBox {
+  background:white;
+  margin-top:15px;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+  text-align:center;
+  display:none;
+}
+
+.optionBtn {
+  margin:5px;
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  background:#ff6b6b;
+  color:white;
+  cursor:pointer;
+}
 </style>
 </head>
+
 <body>
 
 <h1>🎉 İyi ki Doğdun Fazocan! 🎂</h1>
@@ -139,171 +144,174 @@ canvas {
 
 <button id="letterBtn">Mektup Aç</button>
 <div id="message">
-  Doğum günün kutlu dostluğumuz daim olsun. Hep olman, hep iyi ki olman dileğiyle…
+  Doğum günün kutlu dostluğumuz daim olsun. Hep olman hep iyi ki olman dileğiyle…
 </div>
 
-<!-- DEĞİŞTİRİLMİŞ YAZI -->
 <div id="surprise">1 sürprizim daha var. Önce seçimini yap.</div>
 
-<!-- YENİ SEÇİM BUTONU -->
 <button id="choiceBtn">Seçim Yap</button>
 
-<!-- SEÇİM KUTUSU -->
-<div id="choiceBox" style="display:none; margin-top:15px; 
-     background:white; padding:15px; border-radius:15px; 
-     box-shadow:0 4px 15px rgba(0,0,0,0.15); text-align:center;">
+<div id="choiceBox" class="choiceBox">
+  <p><strong>Bir söz seç:</strong></p>
 
-  <p style="font-weight:600; margin-bottom:10px;">Bir söz seç:</p>
-
-  <button class="optionBtn" data-value="Günün kutlu dostluğumuz daim olsun"
-    style="margin:5px; padding:10px 15px; border:none; border-radius:10px; background:#4b7bec; color:white; cursor:pointer;">
-    Günün kutlu dostluğumuz daim olsun
+  <button class="optionBtn" data-value="A şıkkı: Günün kutlu dostluğumuz daim olsun">
+    A Şıkkı
   </button>
 
-  <button class="optionBtn" data-value="Hep olman hep iyi ki olman dileğiyle"
-    style="margin:5px; padding:10px 15px; border:none; border-radius:10px; background:#ff6b6b; color:white; cursor:pointer;">
-    Hep olman hep iyi ki olman dileğiyle
+  <button class="optionBtn" data-value="B şıkkı: Hep olman hep iyi ki olman dileğiyle">
+    B Şıkkı
   </button>
 </div>
 
-<!-- SEÇİM SONRASI YAZI -->
 <div id="afterChoice" 
-     style="display:none; margin-top:15px; font-size:1.2em; 
-            color:#333; font-weight:600; text-align:center;">
-  Şimdi seçimini bana yaz
+     style="display:none; margin-top:15px; font-size:1.2em; font-weight:600;">
+     Şimdi seçimini bana yaz
 </div>
 
 <canvas id="animationCanvas"></canvas>
 
 <script>
-// Mumlar
-const cake = document.getElementById('cake');
-const letterBtn = document.getElementById('letterBtn');
-const message = document.getElementById('message');
-const surprise = document.getElementById('surprise');
+// CANVAS
+const canvas = document.getElementById("animationCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+// SEÇİM SİSTEMİ
 const choiceBtn = document.getElementById("choiceBtn");
 const choiceBox = document.getElementById("choiceBox");
 const afterChoice = document.getElementById("afterChoice");
-const canvas = document.getElementById('animationCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
+choiceBtn.onclick = () => {
+  choiceBox.style.display = "block";
+  startBackgroundMusic();
+};
+
+document.querySelectorAll(".optionBtn").forEach(btn => {
+  btn.onclick = () => {
+    afterChoice.style.display = "block";
+    choiceBox.style.display = "none";
+  };
+});
+
+// MEKTUP
+document.getElementById("letterBtn").onclick = () => {
+  const msg = document.getElementById("message");
+  msg.style.display = msg.style.display === "block" ? "none" : "block";
+};
+
+// MUM SİSTEMİ
+const cake = document.getElementById("cake");
+const surprise = document.getElementById("surprise");
 let candlesLit = 19;
-const flames = [];
+const confetti = [];
+const balloons = [];
 
-// Mum oluşturma
-for(let i=0;i<19;i++){
-  const candle = document.createElement('div');
-  candle.classList.add('candle');
-  const flame = document.createElement('div');
-  flame.classList.add('flame');
-  candle.appendChild(flame);
-  cake.appendChild(candle);
-  flames.push(flame);
+for (let i = 0; i < 19; i++) {
+  let c = document.createElement("div");
+  c.classList.add("candle");
+  let f = document.createElement("div");
+  f.classList.add("flame");
+  c.appendChild(f);
+  cake.appendChild(c);
 
-  candle.addEventListener('click',()=>{
-    if(flame.style.display !== 'none'){
-      flame.style.display='none';
+  c.onclick = () => {
+    if (f.style.display !== "none") {
+      f.style.display = "none";
       candlesLit--;
-      if(candlesLit===0){
+      startBackgroundMusic();
+
+      if (candlesLit === 0) {
         startConfetti();
         launchBalloons();
-        surprise.style.display='block';
+        playCelebrationSound();
+        surprise.style.display = "block";
       }
     }
-  });
+  };
 }
 
-// Confetti
-const confettiParticles=[];
-function startConfetti(){
-  for(let i=0;i<200;i++){
-    confettiParticles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height - 200,
-      size:Math.random()*8+3,
-      speed:Math.random()*4+2,
-      angle:Math.random()*360,
-      color:`hsl(${Math.random()*360},100%,50%)`,
+// KUTLAMA SESİ
+const celebrationSound = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_7e1aef3b6c.mp3");
+
+// ARKA PLAN MÜZİĞİ (LOOP)
+const bgMusic = new Audio("https://cdn.pixabay.com/audio/2021/09/16/audio_78fbc1db12.mp3");
+bgMusic.loop = true;
+let bgStarted = false;
+
+function startBackgroundMusic() {
+  if (!bgStarted) {
+    bgMusic.play();
+    bgStarted = true;
+  }
+}
+
+function playCelebrationSound() {
+  celebrationSound.currentTime = 0;
+  celebrationSound.play();
+}
+
+// CONFETTI
+function startConfetti() {
+  for (let i = 0; i < 200; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -200,
+      size: Math.random() * 7 + 3,
+      speed: Math.random() * 4 + 2,
+      color: `hsl(${Math.random()*360},100%,50%)`,
+      angle: Math.random() * 360
     });
   }
-  requestAnimationFrame(animationLoop);
+  animate();
 }
 
-// Balonlar
-const balloons=[];
-function launchBalloons(){
-  for(let i=0;i<15;i++){
+// BALONLAR
+function launchBalloons() {
+  for (let i = 0; i < 15; i++) {
     balloons.push({
-      x:Math.random()*(canvas.width-100)+50,
-      y:canvas.height + 50 + Math.random()*100,
-      radiusX:25,
-      radiusY:35,
-      speed:1 + Math.random()*1.5,
-      color: '#ff6b6b',
-      sway: 2 + Math.random()*1,
-      swayDir: Math.random()<0.5 ? -1 : 1
+      x: Math.random() * canvas.width,
+      y: canvas.height + Math.random() * 200,
+      radiusX: 25,
+      radiusY: 35,
+      speed: Math.random() * 1.5 + 1
     });
   }
 }
 
-// Ana animasyon loop
-function animationLoop(){
+function animate() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Confetti
-  confettiParticles.forEach(p=>{
+  confetti.forEach(p=>{
     ctx.save();
-    ctx.fillStyle=p.color;
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.angle*Math.PI/180);
-    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+    ctx.fillStyle = p.color;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angle * Math.PI / 180);
+    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
     ctx.restore();
 
     p.y += p.speed;
     p.angle += 2;
-    if(p.y>canvas.height) p.y=0;
+
+    if (p.y > canvas.height) p.y = -20;
   });
 
-  // Balonlar
-  balloons.forEach(b=>{
-    b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
+  balloons.forEach(b => {
     b.y -= b.speed;
-
     ctx.beginPath();
-    ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI * 2);
-    ctx.fillStyle = b.color;
+    ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI*2);
+    ctx.fillStyle = "#ff6b6b";
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(b.x, b.y + b.radiusY);
-    ctx.lineTo(b.x, b.y + b.radiusY + 30);
-    ctx.strokeStyle = "#555";
+    ctx.lineTo(b.x, b.y + b.radiusY + 35);
+    ctx.strokeStyle = "#333";
     ctx.stroke();
   });
 
-  requestAnimationFrame(animationLoop);
+  requestAnimationFrame(animate);
 }
-
-// Mektup butonu
-letterBtn.addEventListener('click',()=>{
-  message.style.display = message.style.display === 'block' ? 'none' : 'block';
-});
-
-// Seçim Sistemi
-choiceBtn.addEventListener("click", () => {
-  choiceBox.style.display = "block";
-});
-
-document.querySelectorAll(".optionBtn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const selected = btn.dataset.value;
-    console.log("Seçilen söz:", selected);
-    choiceBox.style.display = "none";
-    afterChoice.style.display = "block";
-  });
-});
 </script>
 
 </body>
