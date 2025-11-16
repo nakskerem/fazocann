@@ -74,19 +74,24 @@ h1 {
   0% { transform: scaleY(1) rotate(0deg); opacity:1;}
   100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
 }
-#letterBtn {
+#letterBtn, #choiceBtn {
   margin-top:20px;
   padding:10px 20px;
   font-size:1em;
   border:none;
   border-radius:12px;
-  background: linear-gradient(135deg, #ff6b6b, #ff4757);
-  color:white;
   cursor:pointer;
   box-shadow:0 4px 12px rgba(0,0,0,0.2);
-  transition:0.3s;
 }
-#letterBtn:hover { transform: scale(1.05);}
+#letterBtn {
+  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  color:white;
+}
+#letterBtn:hover, #choiceBtn:hover { transform: scale(1.05);}
+#choiceBtn {
+  background:#4b7bec;
+  color:white;
+}
 #message {
   display:none;
   margin-top:15px;
@@ -107,16 +112,32 @@ h1 {
   font-weight:bold;
   text-align:center;
 }
-#choiceBtn {
+#choiceBox {
+  display:none;
   margin-top:15px;
-  padding:10px 20px;
-  font-size:1em;
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+  text-align:center;
+}
+.optionBtn {
+  margin:5px;
+  padding:10px 15px;
   border:none;
-  border-radius:12px;
-  background: #4b7bec;
-  color:white;
+  border-radius:10px;
   cursor:pointer;
-  box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  color:white;
+}
+.optionBtn.a { background:#4b7bec; }  /* A şıkkı mavi */
+.optionBtn.b { background:#ff6b6b; } /* B şıkkı kırmızı */
+#afterChoice {
+  display:none;
+  margin-top:15px;
+  font-size:1.2em;
+  color:#333;
+  font-weight:600;
+  text-align:center;
 }
 canvas {
   position: fixed;
@@ -141,39 +162,20 @@ canvas {
   Doğum günün kutlu dostluğumuz daim olsun. Hep olman, hep iyi ki olman dileğiyle…
 </div>
 
-<!-- DÜZELTİLMİŞ YAZI -->
 <div id="surprise">1 sürprizim daha var. Önce seçimini yap.</div>
-
-<!-- SEÇİM BUTONU -->
 <button id="choiceBtn">Seçim Yap</button>
 
-<!-- A ve B ŞIKKI – SÖZLER GÖRÜNÜR -->
-<div id="choiceBox" style="display:none; margin-top:15px; 
-     background:white; padding:15px; border-radius:15px; 
-     box-shadow:0 4px 15px rgba(0,0,0,0.15); text-align:center;">
-
+<div id="choiceBox">
   <p style="font-weight:600; margin-bottom:10px;">Bir söz seç:</p>
-
-  <!-- A şıkkı -->
-  <button class="optionBtn" data-value="Günün kutlu dostluğumuz daim olsun"
-    style="margin:5px; padding:10px 15px; border:none; 
-           border-radius:10px; background:#4b7bec; color:white; cursor:pointer;">
-    Günün kutlu dostluğumuz daim olsun
+  <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">
+    A: Günün kutlu dostluğumuz daim olsun
   </button>
-
-  <!-- B şıkkı -->
-  <button class="optionBtn" data-value="Hep olman hep iyi ki olman dileğiyle"
-    style="margin:5px; padding:10px 15px; border:none; 
-           border-radius:10px; background:#ff6b6b; color:white; cursor:pointer;">
-    Hep olman hep iyi ki olman dileğiyle
+  <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">
+    B: Hep olman hep iyi ki olman dileğiyle
   </button>
 </div>
 
-<div id="afterChoice" 
-     style="display:none; margin-top:15px; font-size:1.2em; 
-            color:#333; font-weight:600; text-align:center;">
-  Şimdi seçimini bana yaz
-</div>
+<div id="afterChoice">Şimdi seçimini bana yaz</div>
 
 <canvas id="animationCanvas"></canvas>
 
@@ -216,8 +218,9 @@ for(let i=0;i<19;i++){
   });
 }
 
-// Confetti
+// Confetti ve balonlar
 const confettiParticles=[];
+const balloons=[];
 function startConfetti(){
   for(let i=0;i<200;i++){
     confettiParticles.push({
@@ -229,12 +232,6 @@ function startConfetti(){
       color:`hsl(${Math.random()*360},100%,50%)`,
     });
   }
-  requestAnimationFrame(animationLoop);
-}
-
-// Balonlar
-const balloons=[];
-function launchBalloons(){
   for(let i=0;i<15;i++){
     balloons.push({
       x:Math.random()*(canvas.width-100)+50,
@@ -247,13 +244,10 @@ function launchBalloons(){
       swayDir: Math.random()<0.5 ? -1 : 1
     });
   }
+  requestAnimationFrame(animationLoop);
 }
-
-// Çizim Loop
 function animationLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // Confetti
   confettiParticles.forEach(p=>{
     ctx.save();
     ctx.fillStyle=p.color;
@@ -265,24 +259,19 @@ function animationLoop(){
     p.angle += 2;
     if(p.y>canvas.height) p.y=0;
   });
-
-  // Balonlar
   balloons.forEach(b=>{
     b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
     b.y -= b.speed;
-
     ctx.beginPath();
     ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI * 2);
     ctx.fillStyle = b.color;
     ctx.fill();
-
     ctx.beginPath();
     ctx.moveTo(b.x, b.y + b.radiusY);
     ctx.lineTo(b.x, b.y + b.radiusY + 30);
     ctx.strokeStyle = "#555";
     ctx.stroke();
   });
-
   requestAnimationFrame(animationLoop);
 }
 
@@ -291,11 +280,10 @@ letterBtn.addEventListener('click',()=>{
   message.style.display = message.style.display === 'block' ? 'none' : 'block';
 });
 
-// Şık sistemi
+// Şıklar
 choiceBtn.addEventListener("click", () => {
   choiceBox.style.display = "block";
 });
-
 document.querySelectorAll(".optionBtn").forEach(btn => {
   btn.addEventListener("click", () => {
     choiceBox.style.display = "none";
