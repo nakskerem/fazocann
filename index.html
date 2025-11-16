@@ -74,24 +74,19 @@ h1 {
   0% { transform: scaleY(1) rotate(0deg); opacity:1;}
   100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
 }
-#letterBtn, #choiceBtn {
+#letterBtn {
   margin-top:20px;
   padding:10px 20px;
   font-size:1em;
   border:none;
   border-radius:12px;
-  cursor:pointer;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-#letterBtn {
   background: linear-gradient(135deg, #ff6b6b, #ff4757);
   color:white;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  transition:0.3s;
 }
-#letterBtn:hover, #choiceBtn:hover { transform: scale(1.05);}
-#choiceBtn {
-  background:#4b7bec;
-  color:white;
-}
+#letterBtn:hover { transform: scale(1.05);}
 #message {
   display:none;
   margin-top:15px;
@@ -103,6 +98,7 @@ h1 {
   box-shadow:0 6px 20px rgba(0,0,0,0.2);
   max-width:95%;
   text-align:center;
+  word-break: break-word;
 }
 #surprise {
   display:none;
@@ -111,6 +107,18 @@ h1 {
   color:#ff6b6b;
   font-weight:bold;
   text-align:center;
+}
+#choiceBtn {
+  display:none; /* artık mumlar söndükten sonra görünecek */
+  margin-top:15px;
+  padding:10px 20px;
+  font-size:1em;
+  border:none;
+  border-radius:12px;
+  background: #4b7bec;
+  color:white;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);
 }
 #choiceBox {
   display:none;
@@ -194,9 +202,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let candlesLit = 19;
-const flames = [];
 
-// Mumlar
+// Mum oluşturma
 for(let i=0;i<19;i++){
   const candle = document.createElement('div');
   candle.classList.add('candle');
@@ -213,6 +220,8 @@ for(let i=0;i<19;i++){
         startConfetti();
         launchBalloons();
         surprise.style.display='block';
+        // Mumlar söndü, seçim butonunu göster
+        choiceBtn.style.display = "block";
       }
     }
   });
@@ -275,15 +284,16 @@ function animationLoop(){
   requestAnimationFrame(animationLoop);
 }
 
-// Mektup
+// Mektup butonu
 letterBtn.addEventListener('click',()=>{
   message.style.display = message.style.display === 'block' ? 'none' : 'block';
 });
 
-// Şıklar
+// Seçim Sistemi
 choiceBtn.addEventListener("click", () => {
   choiceBox.style.display = "block";
 });
+
 document.querySelectorAll(".optionBtn").forEach(btn => {
   btn.addEventListener("click", () => {
     choiceBox.style.display = "none";
