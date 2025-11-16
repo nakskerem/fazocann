@@ -109,7 +109,7 @@ h1 {
   text-align:center;
 }
 #choiceBtn {
-  display:none; /* artık mumlar söndükten sonra görünecek */
+  display:none; /* Mumlar söndükten sonra görünecek */
   margin-top:15px;
   padding:10px 20px;
   font-size:1em;
@@ -220,8 +220,10 @@ for(let i=0;i<19;i++){
         startConfetti();
         launchBalloons();
         surprise.style.display='block';
-        // Mumlar söndü, seçim butonunu göster
-        choiceBtn.style.display = "block";
+        // Mumlar tamamen söndü, buton görünür
+        setTimeout(() => {
+          choiceBtn.style.display = "block";
+        }, 500);
       }
     }
   });
