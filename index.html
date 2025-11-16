@@ -108,12 +108,12 @@ h1 {
   font-weight:bold;
   text-align:center;
 }
-#musicBtn {
+#choiceBtn {
   margin-top:15px;
-  padding:8px 16px;
-  font-size:0.95em;
+  padding:10px 20px;
+  font-size:1em;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   background: #4b7bec;
   color:white;
   cursor:pointer;
@@ -142,8 +142,36 @@ canvas {
   Doğum günün kutlu dostluğumuz daim olsun. Hep olman, hep iyi ki olman dileğiyle…
 </div>
 
-<div id="surprise">1 sürprizim daha var. Oyuna girmelisin görmek için.</div>
-<button id="musicBtn">Müziği Başlat</button>
+<!-- DEĞİŞTİRİLMİŞ YAZI -->
+<div id="surprise">1 sürprizim daha var. Önce seçimini yap.</div>
+
+<!-- YENİ SEÇİM BUTONU -->
+<button id="choiceBtn">Seçim Yap</button>
+
+<!-- SEÇİM KUTUSU -->
+<div id="choiceBox" style="display:none; margin-top:15px; 
+     background:white; padding:15px; border-radius:15px; 
+     box-shadow:0 4px 15px rgba(0,0,0,0.15); text-align:center;">
+
+  <p style="font-weight:600; margin-bottom:10px;">Bir söz seç:</p>
+
+  <button class="optionBtn" data-value="Günün kutlu dostluğumuz daim olsun"
+    style="margin:5px; padding:10px 15px; border:none; border-radius:10px; background:#4b7bec; color:white; cursor:pointer;">
+    Günün kutlu dostluğumuz daim olsun
+  </button>
+
+  <button class="optionBtn" data-value="Hep olman hep iyi ki olman dileğiyle"
+    style="margin:5px; padding:10px 15px; border:none; border-radius:10px; background:#ff6b6b; color:white; cursor:pointer;">
+    Hep olman hep iyi ki olman dileğiyle
+  </button>
+</div>
+
+<!-- SEÇİM SONRASI YAZI -->
+<div id="afterChoice" 
+     style="display:none; margin-top:15px; font-size:1.2em; 
+            color:#333; font-weight:600; text-align:center;">
+  Şimdi seçimini bana yaz
+</div>
 
 <canvas id="animationCanvas"></canvas>
 
@@ -153,7 +181,9 @@ const cake = document.getElementById('cake');
 const letterBtn = document.getElementById('letterBtn');
 const message = document.getElementById('message');
 const surprise = document.getElementById('surprise');
-const musicBtn = document.getElementById('musicBtn');
+const choiceBtn = document.getElementById("choiceBtn");
+const choiceBox = document.getElementById("choiceBox");
+const afterChoice = document.getElementById("afterChoice");
 const canvas = document.getElementById('animationCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -222,7 +252,7 @@ function launchBalloons(){
 function animationLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Confetti çizimi
+  // Confetti
   confettiParticles.forEach(p=>{
     ctx.save();
     ctx.fillStyle=p.color;
@@ -236,7 +266,7 @@ function animationLoop(){
     if(p.y>canvas.height) p.y=0;
   });
 
-  // Balon çizimi
+  // Balonlar
   balloons.forEach(b=>{
     b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
     b.y -= b.speed;
@@ -256,15 +286,23 @@ function animationLoop(){
   requestAnimationFrame(animationLoop);
 }
 
-// Mektup
+// Mektup butonu
 letterBtn.addEventListener('click',()=>{
   message.style.display = message.style.display === 'block' ? 'none' : 'block';
 });
 
-// Müzik
-musicBtn.addEventListener('click', ()=>{
-  const audio = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_b48e5a0abb.mp3");
-  audio.play();
+// Seçim Sistemi
+choiceBtn.addEventListener("click", () => {
+  choiceBox.style.display = "block";
+});
+
+document.querySelectorAll(".optionBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const selected = btn.dataset.value;
+    console.log("Seçilen söz:", selected);
+    choiceBox.style.display = "none";
+    afterChoice.style.display = "block";
+  });
 });
 </script>
 
