@@ -109,7 +109,7 @@ h1 {
   text-align:center;
 }
 #choiceBtn {
-  display:none; /* Mumlar söndükten sonra görünecek */
+  display:block; /* Başlangıçta görünür */
   margin-top:15px;
   padding:10px 20px;
   font-size:1em;
@@ -220,10 +220,7 @@ for(let i=0;i<19;i++){
         startConfetti();
         launchBalloons();
         surprise.style.display='block';
-        // Mumlar tamamen söndü, buton görünür
-        setTimeout(() => {
-          choiceBtn.style.display = "block";
-        }, 500);
+        // Seçim butonuna herhangi bir ekleme yok, başlangıçta zaten görünür
       }
     }
   });
