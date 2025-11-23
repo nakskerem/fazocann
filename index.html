@@ -138,9 +138,13 @@ h1 {
   border-radius:10px;
   cursor:pointer;
   color:white;
+  font-size:0.9em;
+  transition:0.3s;
 }
-.optionBtn.a{background:#4b7bec;}
-.optionBtn.b{background:#ff6b6b;}
+
+.optionBtn.a { background:#4b7bec; }
+.optionBtn.b { background:#ff6b6b; }
+
 #afterChoice {
   display:none;
   margin-top:15px;
@@ -150,7 +154,15 @@ h1 {
   text-align:center;
 }
 
-/* NEW — Hediye butonu */
+/* ----- SEÇİLDİ EFEKTİ ----- */
+.optionBtn.selected {
+  transform: scale(1.12);
+  box-shadow: 0 0 18px rgba(255, 170, 220, 0.9);
+  background: linear-gradient(135deg, #ff8ad4, #ff5fb8);
+  font-weight:700;
+}
+
+/* Hediye Butonu */
 #giftBtn {
   margin-top:20px;
   padding:10px 18px;
@@ -163,7 +175,7 @@ h1 {
   box-shadow:0 3px 10px rgba(0,0,0,0.2);
   transition:.3s;
 }
-#giftBtn:hover{transform:scale(1.05);}
+#giftBtn:hover{ transform:scale(1.05); }
 
 /* Canvas */
 canvas {
@@ -190,14 +202,19 @@ canvas {
 
 <div id="choiceBox">
   <p style="font-weight:600;margin-bottom:10px;">Bir söz seç:</p>
-  <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">A</button>
-  <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">B</button>
+
+  <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">
+    A: Günün kutlu dostluğumuz daim olsun
+  </button>
+
+  <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">
+    B: Hep olman hep iyi ki olman dileğiyle
+  </button>
 </div>
 
 <div id="afterChoice">Şimdi seçimini bana yaz</div>
 
-<!-- NEW — Hediye Butonu -->
-<button id="giftBtn">🎁</button>
+<button id="giftBtn">🎁 Hediye Paketi</button>
 
 <canvas id="animationCanvas"></canvas>
 
@@ -239,7 +256,7 @@ for(let i=0;i<19;i++){
   });
 }
 
-// ---- KONFETİ + BALON ----
+// ---- KONFETİ ----
 const confettiParticles=[];
 const balloons=[];
 function startConfetti(){
@@ -268,10 +285,9 @@ function startConfetti(){
   requestAnimationFrame(animationLoop);
 }
 
-// ---- HEDİYE PAKETİ: ÇİÇEK & KALP ANİMASYONU ----
+// ---- HEDİYE: ÇİÇEK & KALP ----
 let flowers=[];
 let hearts=[];
-
 giftBtn.addEventListener("click",()=>{
   for(let i=0;i<22;i++){
     flowers.push(createFlower());
@@ -280,43 +296,37 @@ giftBtn.addEventListener("click",()=>{
   animateGift();
 });
 
-// Çiçek şekli
 function createFlower(){
   return {
     x:Math.random()*canvas.width,
     y:canvas.height+50,
     speed:1.2+Math.random()*1,
     size:18+Math.random()*8,
-    color:`hsl(${Math.random()*40+330},80%,70%)`, // pastel pembe tonları
+    color:`hsl(${Math.random()*40+330},80%,70%)`,
     rotation:Math.random()*360
   };
 }
-
-// Kalp şekli
 function createHeart(){
   return {
     x:Math.random()*canvas.width,
     y:canvas.height+60,
     speed:1+Math.random()*1,
     size:20+Math.random()*12,
-    color:"rgba(255,182,193,0.9)", // pastel pembe
+    color:"rgba(255,182,193,0.9)",
     outline:"rgba(255,255,255,0.9)",
     rotation:Math.random()*360
   };
 }
 
-// Kalp çizimi
 function drawHeart(h){
   ctx.save();
-  ctx.translate(h.x, h.y);
+  ctx.translate(h.x,h.y);
   ctx.rotate(h.rotation*Math.PI/180);
-  ctx.scale(h.size/50, h.size/50);
-
+  ctx.scale(h.size/50,h.size/50);
   ctx.beginPath();
-  ctx.moveTo(0, 15);
-  ctx.bezierCurveTo(25, -15, 50, 10, 0, 50);
-  ctx.bezierCurveTo(-50, 10, -25, -15, 0, 15);
-
+  ctx.moveTo(0,15);
+  ctx.bezierCurveTo(25,-15,50,10,0,50);
+  ctx.bezierCurveTo(-50,10,-25,-15,0,15);
   ctx.fillStyle=h.color;
   ctx.fill();
   ctx.lineWidth=3;
@@ -325,56 +335,46 @@ function drawHeart(h){
   ctx.restore();
 }
 
-// Çiçek çizimi (5 yaprak)
 function drawFlower(f){
   ctx.save();
-  ctx.translate(f.x, f.y);
+  ctx.translate(f.x,f.y);
   ctx.rotate(f.rotation*Math.PI/180);
-
   for(let i=0;i<5;i++){
     ctx.rotate((Math.PI*2)/5);
     ctx.beginPath();
-    ctx.ellipse(0, f.size/2, f.size/3, f.size/1.6, 0, 0, Math.PI*2);
+    ctx.ellipse(0,f.size/2,f.size/3,f.size/1.6,0,0,Math.PI*2);
     ctx.fillStyle=f.color;
     ctx.fill();
   }
-
-  // merkez
   ctx.beginPath();
   ctx.arc(0,0,f.size/4,0,Math.PI*2);
   ctx.fillStyle="#fff8f8";
   ctx.fill();
-
   ctx.restore();
 }
 
 function animateGift(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   flowers.forEach(f=>{
     f.y-=f.speed;
     f.rotation+=1;
     drawFlower(f);
   });
-
   hearts.forEach(h=>{
     h.y-=h.speed;
     h.rotation+=1.2;
     drawHeart(h);
   });
-
   flowers=flowers.filter(f=>f.y>-50);
   hearts=hearts.filter(h=>h.y>-50);
-
   if(flowers.length>0 || hearts.length>0){
     requestAnimationFrame(animateGift);
   }
 }
 
-// ---- ANİMASYON LOOP ----
+// ---- ANA ANİMASYON ----
 function animationLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   confettiParticles.forEach(p=>{
     ctx.save();
     ctx.fillStyle=p.color;
@@ -386,7 +386,6 @@ function animationLoop(){
     p.angle+=2;
     if(p.y>canvas.height) p.y=0;
   });
-
   balloons.forEach(b=>{
     b.x+=Math.sin(b.y/60)*b.swayDir*b.sway;
     b.y-=b.speed;
@@ -394,14 +393,12 @@ function animationLoop(){
     ctx.ellipse(b.x,b.y,b.radiusX,b.radiusY,0,0,Math.PI*2);
     ctx.fillStyle=b.color;
     ctx.fill();
-
     ctx.beginPath();
     ctx.moveTo(b.x,b.y+b.radiusY);
     ctx.lineTo(b.x,b.y+b.radiusY+30);
     ctx.strokeStyle="#555";
     ctx.stroke();
   });
-
   requestAnimationFrame(animationLoop);
 }
 
@@ -410,12 +407,21 @@ letterBtn.addEventListener('click',()=>{
   message.style.display = message.style.display==='block'?'none':'block';
 });
 
-// ---- Seçim Sistemi ----
+// ---- Seçim Sistemi + SEÇİLDİ EFEKTİ ----
+let selectedOption = null;
+
 choiceBtn.addEventListener("click",()=>{
   choiceBox.style.display="block";
 });
+
 document.querySelectorAll(".optionBtn").forEach(btn=>{
   btn.addEventListener("click",()=>{
+    
+    if(selectedOption) return; // Seçim kilitli
+
+    btn.classList.add("selected"); // efekt
+    selectedOption = btn;
+
     choiceBox.style.display="none";
     afterChoice.style.display="block";
   });
