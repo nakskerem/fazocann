@@ -178,12 +178,8 @@ canvas {
 
 <div id="choiceBox">
   <p style="font-weight:600; margin-bottom:10px;">Bir söz seç:</p>
-  <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">
-    A: Günün kutlu dostluğumuz daim olsun
-  </button>
-  <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">
-    B: Hep olman hep iyi ki olman dileğiyle
-  </button>
+  <button class="optionBtn a">A: Günün kutlu dostluğumuz daim olsun</button>
+  <button class="optionBtn b">B: Hep olman hep iyi ki olman dileğiyle</button>
 </div>
 
 <div id="afterChoice">Şimdi seçimini bana yaz</div>
@@ -191,26 +187,168 @@ canvas {
 <canvas id="animationCanvas"></canvas>
 
 <script>
-// CANVAS SETUP
 const canvas = document.getElementById('animationCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-// Performance-friendly arrays
-const confettiParticles = [];
-const balloons = [];
-const flowers = [];
-
-// Resize handling (performance optimized)
 window.addEventListener('resize', () => {
   canvas.width = innerWidth;
   canvas.height = innerHeight;
 });
 
-// =====================
-// MUM SÖNDÜRME
-// =====================
+const confettiParticles = [];
+const balloons = [];
+const flowers = [];
+const hearts = [];
+
+function startConfetti(){
+  for(let i=0;i<200;i++){
+    confettiParticles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height - 200,
+      size:Math.random()*8+3,
+      speed:Math.random()*4+2,
+      angle:Math.random()*360,
+      color:`hsl(${Math.random()*360},100%,50%)`,
+    });
+  }
+}
+
+function launchBalloons(){
+  for(let i=0;i<15;i++){
+    balloons.push({
+      x:Math.random()*(canvas.width-100)+50,
+      y:canvas.height + 50 + Math.random()*100,
+      radiusX:25,
+      radiusY:35,
+      speed:1 + Math.random()*1.5,
+      color:'#ff6b6b',
+      sway:2 + Math.random()*1,
+      swayDir:Math.random()<0.5 ? -1 : 1
+    });
+  }
+}
+
+// 🎁 Çiçek + kalp patlaması
+function createFlowerBurst(){
+  // ÇİÇEKLER
+  for(let i=0;i<35;i++){
+    flowers.push({
+      x: canvas.width/2,
+      y: canvas.height/2,
+      size: 10 + Math.random()*15,
+      speedX: (Math.random() - 0.5) * 6,
+      speedY: (Math.random() - 0.5) * 6,
+      color: `hsl(${Math.random()*360},80%,65%)`,
+      life: 80,
+      scale: 1,
+      pulseDir: Math.random() < 0.5 ? -1 : 1
+    });
+  }
+
+  // BEYAZ KALPLER
+  for(let i=0;i<20;i++){
+    hearts.push({
+      x: canvas.width/2,
+      y: canvas.height/2,
+      size: 20 + Math.random()*10,
+      speedX: (Math.random() - 0.5) * 4,
+      speedY: (Math.random() - 0.5) * 4,
+      life: 90,
+      scale: 1,
+      pulseDir: 1
+    });
+  }
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // CONFETTI
+  confettiParticles.forEach(p=>{
+    ctx.save();
+    ctx.fillStyle=p.color;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.angle*Math.PI/180);
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+    ctx.restore();
+    p.y += p.speed;
+    p.angle += 2;
+    if(p.y>canvas.height) p.y=0;
+  });
+
+  // BALLOONS
+  balloons.forEach(b=>{
+    b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
+    b.y -= b.speed;
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI * 2);
+    ctx.fillStyle = b.color;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y + b.radiusY);
+    ctx.lineTo(b.x, b.y + b.radiusY + 30);
+    ctx.strokeStyle = "#555";
+    ctx.stroke();
+  });
+
+  // ÇİÇEKLER (PULSE ANİMASYONU)
+  for(let i=flowers.length-1;i>=0;i--){
+    let f = flowers[i];
+    ctx.beginPath();
+    ctx.fillStyle = f.color;
+    ctx.save();
+    ctx.translate(f.x, f.y);
+    ctx.scale(f.scale, f.scale);
+    ctx.arc(0, 0, f.size, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    f.x += f.speedX;
+    f.y += f.speedY;
+    f.life--;
+    f.size *= 0.97;
+
+    f.scale += 0.02 * f.pulseDir;
+    if(f.scale > 1.2 || f.scale < 0.8) f.pulseDir *= -1;
+
+    if(f.life <= 0) flowers.splice(i,1);
+  }
+
+  // KALPLER ❤️ (PULSE)
+  for(let i=hearts.length-1;i>=0;i--){
+    let h = hearts[i];
+
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.scale(h.scale, h.scale);
+    ctx.fillStyle = "white";
+
+    ctx.beginPath();
+    ctx.moveTo(0, -h.size/2);
+    ctx.bezierCurveTo(h.size, -h.size, h.size, h.size/3, 0, h.size);
+    ctx.bezierCurveTo(-h.size, h.size/3, -h.size, -h.size, 0, -h.size/2);
+    ctx.fill();
+    ctx.restore();
+
+    h.x += h.speedX;
+    h.y += h.speedY;
+    h.life--;
+
+    h.scale += 0.015 * h.pulseDir;
+    if(h.scale > 1.3 || h.scale < 0.9) h.pulseDir *= -1;
+
+    if(h.life <= 0) hearts.splice(i,1);
+  }
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ======================
+// MUM SİSTEMİ
+// ======================
 const cake = document.getElementById('cake');
 let candlesLit = 19;
 
@@ -235,116 +373,7 @@ for(let i=0;i<19;i++){
   });
 }
 
-// =====================
-// CONFETTI
-// =====================
-function startConfetti(){
-  for(let i=0;i<200;i++){
-    confettiParticles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height - 200,
-      size:Math.random()*8+3,
-      speed:Math.random()*4+2,
-      angle:Math.random()*360,
-      color:`hsl(${Math.random()*360},100%,50%)`,
-    });
-  }
-}
-
-// =====================
-// BALLOONS
-// =====================
-function launchBalloons(){
-  for(let i=0;i<15;i++){
-    balloons.push({
-      x:Math.random()*(canvas.width-100)+50,
-      y:canvas.height + 50 + Math.random()*100,
-      radiusX:25,
-      radiusY:35,
-      speed:1 + Math.random()*1.5,
-      color:'#ff6b6b',
-      sway:2 + Math.random()*1,
-      swayDir:Math.random()<0.5 ? -1 : 1
-    });
-  }
-}
-
-// =====================
-// FLOWER EXPLOSION (HEDİYE)
-// =====================
-function createFlowerBurst(){
-  for(let i=0;i<35;i++){
-    flowers.push({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      size: 10 + Math.random()*15,
-      speedX: (Math.random() - 0.5) * 6,
-      speedY: (Math.random() - 0.5) * 6,
-      color: `hsl(${Math.random()*360},80%,65%)`,
-      life: 80
-    });
-  }
-}
-
-// =====================
-// ANIMATION LOOP (TEK!)
-//
-// TÜM animasyonlar tek döngüde → yüksek performans
-// =====================
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // Confetti
-  confettiParticles.forEach(p=>{
-    ctx.save();
-    ctx.fillStyle=p.color;
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.angle*Math.PI/180);
-    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-    ctx.restore();
-    p.y += p.speed;
-    p.angle += 2;
-    if(p.y>canvas.height) p.y=0;
-  });
-
-  // Balloons
-  balloons.forEach(b=>{
-    b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
-    b.y -= b.speed;
-    ctx.beginPath();
-    ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI * 2);
-    ctx.fillStyle = b.color;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(b.x, b.y + b.radiusY);
-    ctx.lineTo(b.x, b.y + b.radiusY + 30);
-    ctx.strokeStyle = "#555";
-    ctx.stroke();
-  });
-
-  // Flowers
-  for(let i=flowers.length-1;i>=0;i--){
-    let f = flowers[i];
-    ctx.beginPath();
-    ctx.fillStyle = f.color;
-    ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
-    ctx.fill();
-
-    f.x += f.speedX;
-    f.y += f.speedY;
-    f.life--;
-    f.size *= 0.97;
-
-    if(f.life <= 0) flowers.splice(i,1);
-  }
-
-  requestAnimationFrame(animate);
-}
-animate();
-
-// =====================
-// BUTONLAR
-// =====================
+// DİĞER BUTONLAR
 document.getElementById('letterBtn').addEventListener('click',()=>{
   const m = document.getElementById('message');
   m.style.display = m.style.display === 'block' ? 'none' : 'block';
