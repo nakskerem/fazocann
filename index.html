@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>İyi ki Doğdun Fazocan!</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin:0;
   padding:0 10px;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #fdfdfd, #e6f0ff);
+  font-family:'Poppins', sans-serif;
+  background:linear-gradient(135deg,#fdfdfd,#e6f0ff);
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -29,7 +30,7 @@ h1 {
   margin-top:10px;
   font-size:1em;
   color:#222;
-  background: rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.9);
   padding:6px 10px;
   border-radius:8px;
   box-shadow:0 2px 6px rgba(0,0,0,0.15);
@@ -42,19 +43,19 @@ h1 {
   width:90%;
   max-width:380px;
   height:180px;
-  background: #fff;
+  background:#fff;
   border-radius:25px;
   box-shadow:0 15px 30px rgba(0,0,0,0.2);
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  padding: 15px;
+  padding:15px;
 }
 .candle {
-  position: relative;
+  position:relative;
   width:12px;
   height:60px;
-  background: linear-gradient(to top, #ffd54f, #ffca28);
+  background:linear-gradient(to top,#ffd54f,#ffca28);
   border-radius:6px;
   cursor:pointer;
   display:flex;
@@ -65,32 +66,33 @@ h1 {
   top:-20px;
   width:12px;
   height:20px;
-  background: radial-gradient(circle, #ffeb3b 0%, #ff9800 60%, rgba(255,152,0,0) 100%);
+  background:radial-gradient(circle,#ffeb3b 0%,#ff9800 60%,rgba(255,152,0,0) 100%);
   border-radius:50%;
-  animation: flicker 0.2s infinite alternate;
-  transform-origin: bottom center;
+  animation:flicker .2s infinite alternate;
+  transform-origin:bottom center;
 }
 @keyframes flicker {
-  0% { transform: scaleY(1) rotate(0deg); opacity:1;}
-  100% { transform: scaleY(0.85) rotate(2deg); opacity:0.8;}
+  0%{transform:scaleY(1) rotate(0deg);opacity:1;}
+  100%{transform:scaleY(.85) rotate(2deg);opacity:.8;}
 }
-#letterBtn, #giftBtn {
+
+#letterBtn {
   margin-top:20px;
   padding:10px 20px;
   font-size:1em;
   border:none;
   border-radius:12px;
-  background: linear-gradient(135deg, #ff6b6b, #ff4757);
+  background:linear-gradient(135deg,#ff6b6b,#ff4757);
   color:white;
   cursor:pointer;
   box-shadow:0 4px 12px rgba(0,0,0,0.2);
-  transition:0.3s;
+  transition:.3s;
 }
-#letterBtn:hover, #giftBtn:hover { transform: scale(1.05);}
+#letterBtn:hover{transform:scale(1.05);}
 #message {
   display:none;
   margin-top:15px;
-  background: rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.95);
   padding:15px 20px;
   border-radius:15px;
   font-size:1.1em;
@@ -115,7 +117,7 @@ h1 {
   font-size:1em;
   border:none;
   border-radius:12px;
-  background: #4b7bec;
+  background:#4b7bec;
   color:white;
   cursor:pointer;
   box-shadow:0 3px 8px rgba(0,0,0,0.15);
@@ -137,8 +139,8 @@ h1 {
   cursor:pointer;
   color:white;
 }
-.optionBtn.a { background:#4b7bec; }
-.optionBtn.b { background:#ff6b6b; }
+.optionBtn.a{background:#4b7bec;}
+.optionBtn.b{background:#ff6b6b;}
 #afterChoice {
   display:none;
   margin-top:15px;
@@ -148,12 +150,26 @@ h1 {
   text-align:center;
 }
 
+/* NEW — Hediye butonu */
+#giftBtn {
+  margin-top:20px;
+  padding:10px 18px;
+  border:none;
+  border-radius:12px;
+  background:#ff9ff3;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  transition:.3s;
+}
+#giftBtn:hover{transform:scale(1.05);}
+
+/* Canvas */
 canvas {
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
   pointer-events:none;
   z-index:999;
 }
@@ -167,105 +183,198 @@ canvas {
 <div id="cake"></div>
 
 <button id="letterBtn">Mektup Aç</button>
-<button id="giftBtn">🎁 Hediye Paketi</button>
-
-<div id="message">
-  Doğum günün kutlu dostluğumuz daim olsun. Hep olman, hep iyi ki olman dileğiyle…
-</div>
+<div id="message">Doğum günün kutlu dostluğumuz daim olsun. Hep olman, hep iyi ki olman dileğiyle…</div>
 
 <div id="surprise">1 sürprizim daha var. Önce seçimini yap.</div>
 <button id="choiceBtn">Seçim Yap</button>
 
 <div id="choiceBox">
-  <p style="font-weight:600; margin-bottom:10px;">Bir söz seç:</p>
-  <button class="optionBtn a">A: Günün kutlu dostluğumuz daim olsun</button>
-  <button class="optionBtn b">B: Hep olman hep iyi ki olman dileğiyle</button>
+  <p style="font-weight:600;margin-bottom:10px;">Bir söz seç:</p>
+  <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">A</button>
+  <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">B</button>
 </div>
 
 <div id="afterChoice">Şimdi seçimini bana yaz</div>
 
+<!-- NEW — Hediye Butonu -->
+<button id="giftBtn">🎁 Hediye Paketi</button>
+
 <canvas id="animationCanvas"></canvas>
 
 <script>
-const canvas = document.getElementById('animationCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+const cake=document.getElementById('cake');
+const letterBtn=document.getElementById('letterBtn');
+const message=document.getElementById('message');
+const surprise=document.getElementById('surprise');
+const choiceBtn=document.getElementById("choiceBtn");
+const choiceBox=document.getElementById("choiceBox");
+const afterChoice=document.getElementById("afterChoice");
+const giftBtn=document.getElementById("giftBtn");
 
-window.addEventListener('resize', () => {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-});
+const canvas=document.getElementById('animationCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const confettiParticles = [];
-const balloons = [];
-const flowers = [];
-const hearts = [];
+// ---- MUM SİSTEMİ ----
+let candlesLit=19;
+for(let i=0;i<19;i++){
+  const candle=document.createElement('div');
+  candle.classList.add('candle');
+  const flame=document.createElement('div');
+  flame.classList.add('flame');
+  candle.appendChild(flame);
+  cake.appendChild(candle);
 
+  candle.addEventListener('click',()=>{
+    if(flame.style.display!=='none'){
+      flame.style.display='none';
+      candlesLit--;
+      if(candlesLit===0){
+        startConfetti();
+        launchBalloons();
+        surprise.style.display='block';
+      }
+    }
+  });
+}
+
+// ---- KONFETİ + BALON ----
+const confettiParticles=[];
+const balloons=[];
 function startConfetti(){
-  for(let i=0;i<200;i++){
+  for(let i=0;i<150;i++){
     confettiParticles.push({
       x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height - 200,
-      size:Math.random()*8+3,
-      speed:Math.random()*4+2,
+      y:Math.random()*canvas.height-200,
+      size:Math.random()*7+3,
+      speed:Math.random()*3+2,
       angle:Math.random()*360,
       color:`hsl(${Math.random()*360},100%,50%)`,
     });
   }
-}
-
-function launchBalloons(){
-  for(let i=0;i<15;i++){
+  for(let i=0;i<12;i++){
     balloons.push({
       x:Math.random()*(canvas.width-100)+50,
-      y:canvas.height + 50 + Math.random()*100,
+      y:canvas.height+50+Math.random()*100,
       radiusX:25,
       radiusY:35,
-      speed:1 + Math.random()*1.5,
+      speed:1+Math.random()*1.3,
       color:'#ff6b6b',
-      sway:2 + Math.random()*1,
-      swayDir:Math.random()<0.5 ? -1 : 1
+      sway:2+Math.random()*1,
+      swayDir:Math.random()<0.5?-1:1
     });
   }
+  requestAnimationFrame(animationLoop);
 }
 
-// 🎁 Çiçek + kalp patlaması
-function createFlowerBurst(){
-  // ÇİÇEKLER
-  for(let i=0;i<35;i++){
-    flowers.push({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      size: 10 + Math.random()*15,
-      speedX: (Math.random() - 0.5) * 6,
-      speedY: (Math.random() - 0.5) * 6,
-      color: `hsl(${Math.random()*360},80%,65%)`,
-      life: 80,
-      scale: 1,
-      pulseDir: Math.random() < 0.5 ? -1 : 1
-    });
-  }
+// ---- HEDİYE PAKETİ: ÇİÇEK & KALP ANİMASYONU ----
+let flowers=[];
+let hearts=[];
 
-  // BEYAZ KALPLER
-  for(let i=0;i<20;i++){
-    hearts.push({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      size: 20 + Math.random()*10,
-      speedX: (Math.random() - 0.5) * 4,
-      speedY: (Math.random() - 0.5) * 4,
-      life: 90,
-      scale: 1,
-      pulseDir: 1
-    });
+giftBtn.addEventListener("click",()=>{
+  for(let i=0;i<22;i++){
+    flowers.push(createFlower());
+    hearts.push(createHeart());
   }
+  animateGift();
+});
+
+// Çiçek şekli
+function createFlower(){
+  return {
+    x:Math.random()*canvas.width,
+    y:canvas.height+50,
+    speed:1.2+Math.random()*1,
+    size:18+Math.random()*8,
+    color:`hsl(${Math.random()*40+330},80%,70%)`, // pastel pembe tonları
+    rotation:Math.random()*360
+  };
 }
 
-function animate(){
+// Kalp şekli
+function createHeart(){
+  return {
+    x:Math.random()*canvas.width,
+    y:canvas.height+60,
+    speed:1+Math.random()*1,
+    size:20+Math.random()*12,
+    color:"rgba(255,182,193,0.9)", // pastel pembe
+    outline:"rgba(255,255,255,0.9)",
+    rotation:Math.random()*360
+  };
+}
+
+// Kalp çizimi
+function drawHeart(h){
+  ctx.save();
+  ctx.translate(h.x, h.y);
+  ctx.rotate(h.rotation*Math.PI/180);
+  ctx.scale(h.size/50, h.size/50);
+
+  ctx.beginPath();
+  ctx.moveTo(0, 15);
+  ctx.bezierCurveTo(25, -15, 50, 10, 0, 50);
+  ctx.bezierCurveTo(-50, 10, -25, -15, 0, 15);
+
+  ctx.fillStyle=h.color;
+  ctx.fill();
+  ctx.lineWidth=3;
+  ctx.strokeStyle=h.outline;
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Çiçek çizimi (5 yaprak)
+function drawFlower(f){
+  ctx.save();
+  ctx.translate(f.x, f.y);
+  ctx.rotate(f.rotation*Math.PI/180);
+
+  for(let i=0;i<5;i++){
+    ctx.rotate((Math.PI*2)/5);
+    ctx.beginPath();
+    ctx.ellipse(0, f.size/2, f.size/3, f.size/1.6, 0, 0, Math.PI*2);
+    ctx.fillStyle=f.color;
+    ctx.fill();
+  }
+
+  // merkez
+  ctx.beginPath();
+  ctx.arc(0,0,f.size/4,0,Math.PI*2);
+  ctx.fillStyle="#fff8f8";
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function animateGift(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // CONFETTI
+  flowers.forEach(f=>{
+    f.y-=f.speed;
+    f.rotation+=1;
+    drawFlower(f);
+  });
+
+  hearts.forEach(h=>{
+    h.y-=h.speed;
+    h.rotation+=1.2;
+    drawHeart(h);
+  });
+
+  flowers=flowers.filter(f=>f.y>-50);
+  hearts=hearts.filter(h=>h.y>-50);
+
+  if(flowers.length>0 || hearts.length>0){
+    requestAnimationFrame(animateGift);
+  }
+}
+
+// ---- ANİMASYON LOOP ----
+function animationLoop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
   confettiParticles.forEach(p=>{
     ctx.save();
     ctx.fillStyle=p.color;
@@ -273,126 +382,43 @@ function animate(){
     ctx.rotate(p.angle*Math.PI/180);
     ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
     ctx.restore();
-    p.y += p.speed;
-    p.angle += 2;
+    p.y+=p.speed;
+    p.angle+=2;
     if(p.y>canvas.height) p.y=0;
   });
 
-  // BALLOONS
   balloons.forEach(b=>{
-    b.x += Math.sin(b.y/60)*b.swayDir*b.sway;
-    b.y -= b.speed;
+    b.x+=Math.sin(b.y/60)*b.swayDir*b.sway;
+    b.y-=b.speed;
     ctx.beginPath();
-    ctx.ellipse(b.x, b.y, b.radiusX, b.radiusY, 0, 0, Math.PI * 2);
-    ctx.fillStyle = b.color;
+    ctx.ellipse(b.x,b.y,b.radiusX,b.radiusY,0,0,Math.PI*2);
+    ctx.fillStyle=b.color;
     ctx.fill();
+
     ctx.beginPath();
-    ctx.moveTo(b.x, b.y + b.radiusY);
-    ctx.lineTo(b.x, b.y + b.radiusY + 30);
-    ctx.strokeStyle = "#555";
+    ctx.moveTo(b.x,b.y+b.radiusY);
+    ctx.lineTo(b.x,b.y+b.radiusY+30);
+    ctx.strokeStyle="#555";
     ctx.stroke();
   });
 
-  // ÇİÇEKLER (PULSE ANİMASYONU)
-  for(let i=flowers.length-1;i>=0;i--){
-    let f = flowers[i];
-    ctx.beginPath();
-    ctx.fillStyle = f.color;
-    ctx.save();
-    ctx.translate(f.x, f.y);
-    ctx.scale(f.scale, f.scale);
-    ctx.arc(0, 0, f.size, 0, Math.PI*2);
-    ctx.fill();
-    ctx.restore();
-
-    f.x += f.speedX;
-    f.y += f.speedY;
-    f.life--;
-    f.size *= 0.97;
-
-    f.scale += 0.02 * f.pulseDir;
-    if(f.scale > 1.2 || f.scale < 0.8) f.pulseDir *= -1;
-
-    if(f.life <= 0) flowers.splice(i,1);
-  }
-
-  // KALPLER ❤️ (PULSE)
-  for(let i=hearts.length-1;i>=0;i--){
-    let h = hearts[i];
-
-    ctx.save();
-    ctx.translate(h.x, h.y);
-    ctx.scale(h.scale, h.scale);
-    ctx.fillStyle = "white";
-
-    ctx.beginPath();
-    ctx.moveTo(0, -h.size/2);
-    ctx.bezierCurveTo(h.size, -h.size, h.size, h.size/3, 0, h.size);
-    ctx.bezierCurveTo(-h.size, h.size/3, -h.size, -h.size, 0, -h.size/2);
-    ctx.fill();
-    ctx.restore();
-
-    h.x += h.speedX;
-    h.y += h.speedY;
-    h.life--;
-
-    h.scale += 0.015 * h.pulseDir;
-    if(h.scale > 1.3 || h.scale < 0.9) h.pulseDir *= -1;
-
-    if(h.life <= 0) hearts.splice(i,1);
-  }
-
-  requestAnimationFrame(animate);
-}
-animate();
-
-// ======================
-// MUM SİSTEMİ
-// ======================
-const cake = document.getElementById('cake');
-let candlesLit = 19;
-
-for(let i=0;i<19;i++){
-  const candle = document.createElement('div');
-  candle.classList.add('candle');
-  const flame = document.createElement('div');
-  flame.classList.add('flame');
-  candle.appendChild(flame);
-  cake.appendChild(candle);
-
-  candle.addEventListener('click',()=>{
-    if(flame.style.display !== 'none'){
-      flame.style.display='none';
-      candlesLit--;
-      if(candlesLit===0){
-        startConfetti();
-        launchBalloons();
-        document.getElementById('surprise').style.display='block';
-      }
-    }
-  });
+  requestAnimationFrame(animationLoop);
 }
 
-// DİĞER BUTONLAR
-document.getElementById('letterBtn').addEventListener('click',()=>{
-  const m = document.getElementById('message');
-  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+// ---- Mektup ----
+letterBtn.addEventListener('click',()=>{
+  message.style.display = message.style.display==='block'?'none':'block';
 });
 
-document.getElementById("choiceBtn").addEventListener("click", () => {
-  document.getElementById("choiceBox").style.display = "block";
+// ---- Seçim Sistemi ----
+choiceBtn.addEventListener("click",()=>{
+  choiceBox.style.display="block";
 });
-
-document.querySelectorAll(".optionBtn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.getElementById("choiceBox").style.display = "none";
-    document.getElementById("afterChoice").style.display = "block";
+document.querySelectorAll(".optionBtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    choiceBox.style.display="none";
+    afterChoice.style.display="block";
   });
-});
-
-// 🎁 HEDİYE BUTONU
-document.getElementById('giftBtn').addEventListener('click', () => {
-  createFlowerBurst();
 });
 </script>
 
