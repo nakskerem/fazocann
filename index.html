@@ -22,8 +22,8 @@ h1 {
   margin-top:40px;
   color:#333;
   font-size:2em;
-  text-shadow:0 2px 5px rgba(0,0,0,0.15);
   text-align:center;
+  text-shadow:0 2px 5px rgba(0,0,0,0.15);
   word-break: break-word;
 }
 #instruction {
@@ -75,7 +75,6 @@ h1 {
   0%{transform:scaleY(1) rotate(0deg);opacity:1;}
   100%{transform:scaleY(.85) rotate(2deg);opacity:.8;}
 }
-
 #letterBtn {
   margin-top:20px;
   padding:10px 20px;
@@ -141,9 +140,18 @@ h1 {
   font-size:0.9em;
   transition:0.3s;
 }
-
 .optionBtn.a { background:#4b7bec; }
 .optionBtn.b { background:#ff6b6b; }
+
+.optionBtn.selected {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(255,255,255,0.8);
+  outline: 3px solid #fff;
+}
+.optionBtn.disabled {
+  opacity:0.4;
+  pointer-events:none;
+}
 
 #afterChoice {
   display:none;
@@ -154,15 +162,6 @@ h1 {
   text-align:center;
 }
 
-/* ----- SEÇİLDİ EFEKTİ ----- */
-.optionBtn.selected {
-  transform: scale(1.12);
-  box-shadow: 0 0 18px rgba(255, 170, 220, 0.9);
-  background: linear-gradient(135deg, #ff8ad4, #ff5fb8);
-  font-weight:700;
-}
-
-/* Hediye Butonu */
 #giftBtn {
   margin-top:20px;
   padding:10px 18px;
@@ -177,7 +176,6 @@ h1 {
 }
 #giftBtn:hover{ transform:scale(1.05); }
 
-/* Canvas */
 canvas {
   position:fixed;
   top:0; left:0;
@@ -202,11 +200,9 @@ canvas {
 
 <div id="choiceBox">
   <p style="font-weight:600;margin-bottom:10px;">Bir söz seç:</p>
-
   <button class="optionBtn a" data-value="Günün kutlu dostluğumuz daim olsun">
     A: Günün kutlu dostluğumuz daim olsun
   </button>
-
   <button class="optionBtn b" data-value="Hep olman hep iyi ki olman dileğiyle">
     B: Hep olman hep iyi ki olman dileğiyle
   </button>
@@ -214,7 +210,7 @@ canvas {
 
 <div id="afterChoice">Şimdi seçimini bana yaz</div>
 
-<button id="giftBtn">🎁 Hediye Paketi</button>
+<button id="giftBtn">🎁</button>
 
 <canvas id="animationCanvas"></canvas>
 
@@ -227,13 +223,12 @@ const choiceBtn=document.getElementById("choiceBtn");
 const choiceBox=document.getElementById("choiceBox");
 const afterChoice=document.getElementById("afterChoice");
 const giftBtn=document.getElementById("giftBtn");
-
 const canvas=document.getElementById('animationCanvas');
 const ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-// ---- MUM SİSTEMİ ----
+// ---- Mumlar ----
 let candlesLit=19;
 for(let i=0;i<19;i++){
   const candle=document.createElement('div');
@@ -256,7 +251,7 @@ for(let i=0;i<19;i++){
   });
 }
 
-// ---- KONFETİ ----
+// ---- Konfeti ve Balon ----
 const confettiParticles=[];
 const balloons=[];
 function startConfetti(){
@@ -285,7 +280,7 @@ function startConfetti(){
   requestAnimationFrame(animationLoop);
 }
 
-// ---- HEDİYE: ÇİÇEK & KALP ----
+// ---- Hediye Paketi (çiçek + kalp) ----
 let flowers=[];
 let hearts=[];
 giftBtn.addEventListener("click",()=>{
@@ -317,7 +312,6 @@ function createHeart(){
     rotation:Math.random()*360
   };
 }
-
 function drawHeart(h){
   ctx.save();
   ctx.translate(h.x,h.y);
@@ -334,7 +328,6 @@ function drawHeart(h){
   ctx.stroke();
   ctx.restore();
 }
-
 function drawFlower(f){
   ctx.save();
   ctx.translate(f.x,f.y);
@@ -352,7 +345,6 @@ function drawFlower(f){
   ctx.fill();
   ctx.restore();
 }
-
 function animateGift(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   flowers.forEach(f=>{
@@ -372,7 +364,7 @@ function animateGift(){
   }
 }
 
-// ---- ANA ANİMASYON ----
+// ---- Ana Animasyon ----
 function animationLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   confettiParticles.forEach(p=>{
@@ -384,7 +376,7 @@ function animationLoop(){
     ctx.restore();
     p.y+=p.speed;
     p.angle+=2;
-    if(p.y>canvas.height) p.y=0;
+    if(p.y>canvas.height)p.y=0;
   });
   balloons.forEach(b=>{
     b.x+=Math.sin(b.y/60)*b.swayDir*b.sway;
@@ -404,26 +396,25 @@ function animationLoop(){
 
 // ---- Mektup ----
 letterBtn.addEventListener('click',()=>{
-  message.style.display = message.style.display==='block'?'none':'block';
+  message.style.display=message.style.display==='block'?'none':'block';
 });
 
-// ---- Seçim Sistemi + SEÇİLDİ EFEKTİ ----
-let selectedOption = null;
+// ---- Seçim Sistemi (seçildi efekti + diğer yarı saydam) ----
+let selectedOption=null;
 
-choiceBtn.addEventListener("click",()=>{
-  choiceBox.style.display="block";
-});
+choiceBtn.addEventListener("click",()=>{ choiceBox.style.display="block"; });
 
 document.querySelectorAll(".optionBtn").forEach(btn=>{
   btn.addEventListener("click",()=>{
-    
-    if(selectedOption) return; // Seçim kilitli
+    if(selectedOption) return;
+    btn.classList.add("selected");
+    selectedOption=btn;
 
-    btn.classList.add("selected"); // efekt
-    selectedOption = btn;
+    document.querySelectorAll(".optionBtn").forEach(other=>{
+      if(other!==btn) other.classList.add("disabled");
+    });
 
-    choiceBox.style.display="none";
-    afterChoice.style.display="block";
+    afterChoice.style.display="block"; // yazı çıkıyor
   });
 });
 </script>
